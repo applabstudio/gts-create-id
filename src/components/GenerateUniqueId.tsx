@@ -14,8 +14,13 @@ import {
   IconButton,
   InputAdornment,
 } from "@mui/material";
-import { Add, Delete, Inventory2Outlined, SearchOutlined} from "@mui/icons-material";
-import Logo from '../assets/images/logo.png';
+import {
+  Add,
+  Delete,
+  Inventory2Outlined,
+  SearchOutlined,
+} from "@mui/icons-material";
+import Logo from "../assets/images/logo.png";
 
 interface Article {
   name: string;
@@ -104,58 +109,70 @@ function GenerateUniqueId(): JSX.Element {
       article.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-
   return (
     <>
-    <Box sx={{ pt: 2, pb: 2 }} style={{backgroundColor: 'black', display:'flex', justifyContent: 'center', flexFlow: 'column'}}>
-    <img src={Logo} alt="logo" width={160} style={{margin: '0 auto'}}/>
-    <Typography variant="h4" sx={{ mb: 1 }} style={{color: 'white'}} align="center">
-      GTS - Generatore ID Articoli
-    </Typography>
-  </Box>
-    <Container sx={{ py: 8 }}>
-    <Typography variant="h3">
-      Genera il codice articolo univoco del magazzino
-    </Typography>
-      <Box sx={{ mt: 10 }}>
-        <Grid container spacing={2} style={{justifyContent:'center'}}>
-          <Grid>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={options.productType}
-                  onChange={() => handleOptionChange("productType")}
-                />
-              }
-              label="Tipo di prodotto"
-            />
-             <FormControlLabel
-              control={
-                <Checkbox
-                  checked={options.brand}
-                  onChange={() => handleOptionChange("brand")}
-                />
-              }
-              label="Marca"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={options.model}
-                  onChange={() => handleOptionChange("model")}
-                />
-              }
-              label="Modello"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={options.serialNumber}
-                  onChange={() => handleOptionChange("serialNumber")}
-                />
-              }
-              label="Serial Number"
-            />
+      <Box
+        sx={{ pt: 2, pb: 2 }}
+        style={{
+          backgroundColor: "black",
+          display: "flex",
+          justifyContent: "center",
+          flexFlow: "column",
+        }}
+      >
+        <img src={Logo} alt="logo" width={160} style={{ margin: "0 auto" }} />
+        <Typography
+          variant="h4"
+          sx={{ mb: 1 }}
+          style={{ color: "white" }}
+          align="center"
+        >
+          GTS - Generatore ID Articoli
+        </Typography>
+      </Box>
+      <Container sx={{ py: 8 }}>
+        <Typography variant="h3">
+          Genera il codice articolo univoco del magazzino
+        </Typography>
+        <Box sx={{ mt: 10 }}>
+          <Grid container spacing={2} style={{ justifyContent: "center" }}>
+            <Grid>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={options.productType}
+                    onChange={() => handleOptionChange("productType")}
+                  />
+                }
+                label="Tipo di prodotto"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={options.brand}
+                    onChange={() => handleOptionChange("brand")}
+                  />
+                }
+                label="Marca"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={options.model}
+                    onChange={() => handleOptionChange("model")}
+                  />
+                }
+                label="Modello"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={options.serialNumber}
+                    onChange={() => handleOptionChange("serialNumber")}
+                  />
+                }
+                label="Serial Number"
+              />
               {options.serialNumber && (
                 <TextField
                   label="Inizio numero seriale"
@@ -164,76 +181,80 @@ function GenerateUniqueId(): JSX.Element {
                   onChange={handleSerialNumberChange}
                   fullWidth
                 />
-          )}
+              )}
+            </Grid>
           </Grid>
-        </Grid>
-      </Box>
+        </Box>
 
-      <Box sx={{ mt: 4 }} style={{display:'flex', justifyContent:'center'}}>
-        <Button variant="contained" startIcon={<Add />} onClick={addArticle} >
-          Aggiungi Articolo
-        </Button>
-      </Box>
-      <Typography variant="h6" align="left" sx={{ mt: 10 }}>
-        Cerca gli articoli generati oggi
-      </Typography>
-      <Box sx={{ mt: 4 }}>
-        <TextField
-          label="Cerca"
-          type="text"
-          value={searchTerm}
-          onChange={handleSearchTermChange}
-          fullWidth
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-               <SearchOutlined></SearchOutlined>
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Box>
+        <Box
+          sx={{ mt: 4 }}
+          style={{ display: "flex", justifyContent: "center" }}
+        >
+          <Button variant="contained" startIcon={<Add />} onClick={addArticle}>
+            Aggiungi Articolo
+          </Button>
+        </Box>
+        <Typography variant="h6" align="left" sx={{ mt: 10 }}>
+          Cerca gli articoli generati oggi
+        </Typography>
+        <Box sx={{ mt: 4 }}>
+          <TextField
+            label="Cerca"
+            type="text"
+            value={searchTerm}
+            onChange={handleSearchTermChange}
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchOutlined></SearchOutlined>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
 
-      <Box sx={{ mt: 4 }}>
-        <List>
-          {filteredArticles.map((article) => (
-            <ListItem
-              key={article.uniqueId}
-              secondaryAction={
-                <IconButton
-                  edge="end"
-                  aria-label="delete"
-                  onClick={() => removeArticle(article)}
-                >
-                  <Delete />
-                </IconButton>
-              }
-            >
-              <ListItemText
-                primary={article.name}
-                secondary={article.uniqueId}
-              />
-            </ListItem>
-          ))}
-        </List>
-      </Box>
-      <Box>
-    <Typography variant="h5" component="h3">
-      Storico Articoli Generati
-    </Typography>
-    
-    <List sx={{ bgcolor: 'background.paper' }}>
-      {idHistory.map((id) => (
-        <ListItem key={id}>
-        <Inventory2Outlined></Inventory2Outlined><ListItemText primary={id} />
-        </ListItem>
-      ))}
-    </List>
-  </Box>
-    </Container>
+        <Box sx={{ mt: 4 }}>
+          <List>
+            {filteredArticles.map((article) => (
+              <ListItem
+                key={article.uniqueId}
+                secondaryAction={
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    onClick={() => removeArticle(article)}
+                  >
+                    <Delete />
+                  </IconButton>
+                }
+              >
+                <Inventory2Outlined></Inventory2Outlined>
+                <ListItemText
+                  primary={article.name}
+                  secondary={article.uniqueId}
+                />
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+        <Box>
+          <Typography variant="h5" component="h3">
+            Storico Articoli Generati
+          </Typography>
+
+          <List sx={{ bgcolor: "background.paper" }}>
+            {idHistory.map((id) => (
+              <ListItem key={id}>
+                <Inventory2Outlined></Inventory2Outlined>
+                <ListItemText primary={id} />
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      </Container>
     </>
-
-);
+  );
 }
 
 export default GenerateUniqueId;
