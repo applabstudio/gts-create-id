@@ -20,7 +20,7 @@ import {
   Inventory2Outlined,
   SearchOutlined,
 } from "@mui/icons-material";
-import Logo from "../assets/images/logo.png";
+import Header from "./Header";
 
 interface Article {
   name: string;
@@ -111,7 +111,7 @@ function GenerateUniqueId(): JSX.Element {
 
   return (
     <>
-      <Box
+      {/* <Box
         sx={{ pt: 2, pb: 2 }}
         style={{
           backgroundColor: "black",
@@ -129,7 +129,8 @@ function GenerateUniqueId(): JSX.Element {
         >
           GTS - Generatore ID Articoli
         </Typography>
-      </Box>
+      </Box> */}
+      <Header title=""/>
       <Container sx={{ py: 8 }}>
         <Typography variant="h3">
           Genera il codice articolo univoco del magazzino
@@ -194,7 +195,7 @@ function GenerateUniqueId(): JSX.Element {
             Aggiungi Articolo
           </Button>
         </Box>
-        <Typography variant="h6" align="left" sx={{ mt: 10 }}>
+        <Typography variant="h6" align="left" sx={{ mt: 10 }} id="search">
           Cerca gli articoli generati oggi
         </Typography>
         <Box sx={{ mt: 4 }}>
