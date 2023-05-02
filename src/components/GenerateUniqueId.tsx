@@ -12,23 +12,36 @@ import {
   ListItem,
   ListItemText,
   IconButton,
+  InputAdornment,
 } from "@mui/material";
-import { Add, Delete, Inventory2Outlined } from "@mui/icons-material";
-import Logo from "./assets/logo.png";
+import { Add, Delete, Inventory2Outlined, SearchOutlined} from "@mui/icons-material";
+import Logo from '../assets/images/logo.png';
 
-function GenerateUniqueId() {
-  const [options, setOptions] = useState({
+interface Article {
+  name: string;
+  uniqueId: string;
+}
+
+interface Options {
+  productType: boolean;
+  brand: boolean;
+  model: boolean;
+  serialNumber: boolean;
+}
+
+function GenerateUniqueId(): JSX.Element {
+  const [options, setOptions] = useState<Options>({
     productType: false,
     brand: false,
     model: false,
     serialNumber: false,
   });
-  const [articles, setArticles] = useState([]);
-  const [idHistory, setIdHistory] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [serialNumber, setSerialNumber] = useState(1);
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [idHistory, setIdHistory] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [serialNumber, setSerialNumber] = useState<number>(1);
 
-  function handleOptionChange(option) {
+  function handleOptionChange(option: keyof Options) {
     setOptions({
       ...options,
       [option]: !options[option],
@@ -45,7 +58,7 @@ function GenerateUniqueId() {
   }
 
   function addArticle() {
-    const newArticle = {
+    const newArticle: Article = {
       name: "",
       uniqueId: generateUniqueId(),
     };
@@ -70,16 +83,18 @@ function GenerateUniqueId() {
     loadIdHistory();
   }, []);
 
-  function removeArticle(article) {
+  function removeArticle(article: Article) {
     const newArticles = articles.filter((a) => a !== article);
     setArticles(newArticles);
   }
 
-  function handleSearchTermChange(event) {
+  function handleSearchTermChange(event: React.ChangeEvent<HTMLInputElement>) {
     setSearchTerm(event.target.value);
   }
 
-  function handleSerialNumberChange(event) {
+  function handleSerialNumberChange(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
     setSerialNumber(Number(event.target.value));
   }
 
@@ -89,11 +104,12 @@ function GenerateUniqueId() {
       article.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+
   return (
     <>
-    <Box sx={{ pt: 2, pb: 2 }} style={{backgroundColor: 'black'}}>
-    <img src={Logo} alt="logo" />
-    <Typography variant="h4" sx={{ mb: 1 }} style={{color: 'white'}}>
+    <Box sx={{ pt: 2, pb: 2 }} style={{backgroundColor: 'black', display:'flex', justifyContent: 'center', flexFlow: 'column'}}>
+    <img src={Logo} alt="logo" width={160} style={{margin: '0 auto'}}/>
+    <Typography variant="h4" sx={{ mb: 1 }} style={{color: 'white'}} align="center">
       GTS - Generatore ID Articoli
     </Typography>
   </Box>
@@ -153,14 +169,14 @@ function GenerateUniqueId() {
         </Grid>
       </Box>
 
-      <Box sx={{ mt: 4 }}>
-        <Button variant="contained" startIcon={<Add />} onClick={addArticle}>
+      <Box sx={{ mt: 4 }} style={{display:'flex', justifyContent:'center'}}>
+        <Button variant="contained" startIcon={<Add />} onClick={addArticle} >
           Aggiungi Articolo
         </Button>
       </Box>
       <Typography variant="h6" align="left" sx={{ mt: 10 }}>
-      Cerca gli articoli generati oggi
-    </Typography>
+        Cerca gli articoli generati oggi
+      </Typography>
       <Box sx={{ mt: 4 }}>
         <TextField
           label="Cerca"
@@ -168,6 +184,13 @@ function GenerateUniqueId() {
           value={searchTerm}
           onChange={handleSearchTermChange}
           fullWidth
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+               <SearchOutlined></SearchOutlined>
+              </InputAdornment>
+            ),
+          }}
         />
       </Box>
 
@@ -210,7 +233,7 @@ function GenerateUniqueId() {
     </Container>
     </>
 
-  );
+);
 }
 
 export default GenerateUniqueId;
