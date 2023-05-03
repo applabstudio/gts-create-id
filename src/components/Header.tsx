@@ -11,6 +11,9 @@ import {
   ListItemIcon,
   ListItemText,
   Switch,
+  Box,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import { Menu, Home } from '@mui/icons-material';
 import LightLogo from "../assets/images/light-logo.png";
@@ -23,6 +26,8 @@ type HeaderProps = {
 const Header: React.FC<HeaderProps> = ({ title }) => {
   const [open, setOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const toggleDrawer = (isOpen: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
     if (
@@ -46,31 +51,34 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
   ];
 
   return (
-      <div>
-        <AppBar position="static" color={darkMode ? 'default' : 'primary'}>
-          <Toolbar>
-            <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
-              <Menu />
-            </IconButton>
-            <Typography variant="h6" sx={{ flexGrow: 1 }}>
-              <img src={darkMode ? DarkLogo : LightLogo} width={120} alt={'Logo'}/> {title}
-            </Typography>
+    <div>
+      <AppBar position="static" color={darkMode ? 'default' : 'primary'}>
+        <Toolbar sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: 'center' }}>
+          <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
+            <Menu />
+          </IconButton>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            <img src={darkMode ? DarkLogo : LightLogo} width={120} alt={'Logo'}/> {title}
+          </Typography>
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
             <Switch checked={darkMode} onChange={handleDarkModeToggle} color="default" />
             <Button color="inherit" href="#search">Cerca</Button>
-          </Toolbar>
-        </AppBar>
-        <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
-          <List>
-            {menuItems.map((item) => (
-              <ListItem button key={item.label} component="a" href={item.path}>
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.label} />
-              </ListItem>
-            ))}
-          </List>
-        </Drawer>
-      </div>
+          </Box>
+        </Toolbar>
+      </AppBar>
+      <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
+        <List>
+          {menuItems.map((item) => (
+            <ListItem button key={item.label} component="a" href={item.path}>
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.label} />
+            </ListItem>
+          ))}
+        </List>
+      </Drawer>
+    </div>
   );
+  
 };
 
 export default Header;

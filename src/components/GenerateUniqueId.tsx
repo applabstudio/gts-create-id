@@ -21,14 +21,14 @@ import {
   Add,
   Delete,
   SearchOutlined,
-  AccessTimeOutlined,
-  Work
+  AccessTimeOutlined
 } from "@mui/icons-material";
 import ArticleIcon from "@mui/icons-material/Article";
 import Papa from "papaparse";
 import Header from "./Header";
 import BannerBackground from "./BannerBackground";
 import CodificaTable from "./CodificaTable";
+import CommessaIcon from '../assets/images/commessa.png';
 
 const tableData = [
   {
@@ -265,8 +265,8 @@ function GenerateUniqueId(): JSX.Element {
       <Header title="" />
       <BannerBackground />
       <Container sx={{ py: 2 }}>
-        <Box sx={{ mt: 5 }}>
-          <Grid container spacing={2} style={{ justifyContent: "center" }}>
+        <Box sx={{ mt: 2 }}>
+          <Grid>
             <Grid>
 
               <CodificaTable data={tableData}/>
@@ -489,7 +489,7 @@ function GenerateUniqueId(): JSX.Element {
                   </div>
                 }
               >
-                <Work/>
+                <img src={CommessaIcon} alt="commessa" width={42}/>
                 <ListItemText
                   primary={article.name}
                   secondary={article.uniqueId}
@@ -545,7 +545,7 @@ sx={{ my: 2 }}
                 }
               >
                 <ListItemIcon>
-                <Work/>
+                <img src={CommessaIcon} alt="commessa" width={42}/>
                 </ListItemIcon>
                 <ListItemText primary={id} />
               </ListItem>
