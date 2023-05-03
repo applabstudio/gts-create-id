@@ -209,6 +209,26 @@ function GenerateUniqueId(): JSX.Element {
           <Grid container spacing={2} style={{ justifyContent: "center" }}>
             <Grid>
               <div>
+                <h4>Struttura di codifica</h4>
+                <samp> 
+       [V] [DH][000][CSA][HA][001][A1]  <br/>
+          |   |	  |   |   |   |   |
+          |   |	  |   |   |   |   |------------ Versione del progetto indicato a cliente (es: versione A1, A2, ...)<br/>
+          |   |	  |   |   |   |  
+          |   |   |   |   |   |---------------- Codice cliente esempio (es: 001,002,003 ecc)<br/>
+          |   |   |   |   |   
+          |   |   |   |   |-------------------- Tipo hardware utilizzato vedi schema legenda tecnica in ordine alfabetico es: HA(es: HA, HB)<br/>
+          |   |	  |   |
+          |   |	  |   |------------------------ Categoria del software impiegato (es: CSA)<br/>
+          |   |   |  
+          |   |	  |---------------------------- Numero progressivo del progetto indipendente dalla tipologia di utilizzo<br/>
+          |   |
+          |   |-------------------------------- Tipologia di utilizzo DH= domotica<br/>
+          |
+          |------------------------------------ Identificazione del tipo di software vedi legenda<br/>
+</samp>
+              </div>
+              <div>
                 <h3>Versione del progetto indicato a cliente</h3>
                 <FormControlLabel
                   control={
