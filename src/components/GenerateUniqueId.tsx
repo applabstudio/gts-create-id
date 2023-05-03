@@ -132,8 +132,8 @@ function GenerateUniqueId(): JSX.Element {
       </Box> */}
       <Header title=""/>
       <Container sx={{ py: 8 }}>
-        <Typography variant="h3">
-          Genera il codice articolo univoco del magazzino
+        <Typography variant="h3" align="center">
+          Genera il codice commessa 
         </Typography>
         <Box sx={{ mt: 10 }}>
           <Grid container spacing={2} style={{ justifyContent: "center" }}>
@@ -172,11 +172,11 @@ function GenerateUniqueId(): JSX.Element {
                     onChange={() => handleOptionChange("serialNumber")}
                   />
                 }
-                label="Serial Number"
+                label="Numero Progressivo"
               />
               {options.serialNumber && (
                 <TextField
-                  label="Inizio numero seriale"
+                  label="Inizio numero progressivo"
                   type="number"
                   value={serialNumber}
                   onChange={handleSerialNumberChange}
@@ -192,11 +192,11 @@ function GenerateUniqueId(): JSX.Element {
           style={{ display: "flex", justifyContent: "center" }}
         >
           <Button variant="contained" startIcon={<Add />} onClick={addArticle}>
-            Aggiungi Articolo
+            Aggiungi ID Commessa
           </Button>
         </Box>
         <Typography variant="h6" align="left" sx={{ mt: 10 }} id="search">
-          Cerca gli articoli generati oggi
+          Cerca gli id commesse generate oggi
         </Typography>
         <Box sx={{ mt: 4 }}>
           <TextField
@@ -241,7 +241,7 @@ function GenerateUniqueId(): JSX.Element {
         </Box>
         <Box>
           <Typography variant="h5" component="h3">
-            Storico Articoli Generati
+            Cronologia ID Commesse generate
           </Typography>
 
           <List sx={{ bgcolor: "background.paper" }}>
