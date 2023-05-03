@@ -158,12 +158,18 @@ function GenerateUniqueId(): JSX.Element {
     setArticles(newArticles);
   }
 
-  function removeIdFromHistory(id: string): void {
-    const history = JSON.parse(localStorage.getItem("idHistory") || "[]");
-    const updatedHistory = history.filter((savedId: string) => savedId !== id);
-    localStorage.setItem("idHistory", JSON.stringify(updatedHistory));
-    setIdHistory(updatedHistory);
-  }
+  const removeIdFromHistory = (idToRemove: string) => {
+    setIdHistory((prevHistory) =>
+      prevHistory.filter((id) => id !== idToRemove)
+    );
+    localStorage.setItem("idHistory", JSON.stringify(idHistory));
+  };
+
+
+  const handleRemoveAll = () => {
+    localStorage.removeItem("idHistory");
+    setIdHistory([]);
+  };
   
 
   // function handleSearchTermChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -235,28 +241,28 @@ function GenerateUniqueId(): JSX.Element {
             <Grid>
               <div>
                 <h4>Struttura di codifica</h4>
-                <samp style={{ color: "orange" }}>
-                  <b>[A1]:</b> Versione del progetto indicato a cliente (es:
+                <p style={{ color: "grey", textAlign:'justify'}}>
+                  <b style={{color:'green'}}>[A1]:</b> Versione del progetto indicato a cliente (es:
                   versione A1, A2, ...)
                   <br />
-                  <b>[001]:</b> Codice cliente esempio (es: 001,002,003 ecc)
+                  <b style={{color:'green'}}>[001]:</b> Codice cliente esempio (es: 001,002,003 ecc)
                   <br />
-                  <b>[HA]:</b>Tipo hardware utilizzato vedi schema legenda
+                  <b style={{color:'green'}}>[HA]:</b> Tipo hardware utilizzato vedi schema legenda
                   tecnica in ordine alfabetico es: HA(es: HA, HB)
                   <br />
-                  <b>[CSA]:</b> Categoria del software impiegato (es: CSA)
+                  <b style={{color:'green'}}>[CSA]:</b> Categoria del software impiegato (es: CSA)
                   <br />
-                  <b>[000]:</b> Numero progressivo del progetto indipendente
+                  <b style={{color:'green'}}>[000]:</b> Numero progressivo del progetto indipendente
                   dalla tipologia di utilizzo
                   <br />
-                  <b>[DH]:</b>Tipologia di utilizzo DH= domotica
+                  <b style={{color:'green'}}>[DH]:</b> Tipologia di utilizzo DH= domotica
                   <br />
-                  <b>[V]:</b>Identificazione del tipo di software vedi legenda
+                  <b style={{color:'green'}}>[V]:</b> Identificazione del tipo di software vedi legenda
                   <br />
-                </samp>
+                </p>
               </div>
               <div>
-                <h3>Versione del progetto indicato a cliente</h3>
+                <h3><i>Step 1.</i> Versione del progetto indicato a cliente</h3>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -277,7 +283,7 @@ function GenerateUniqueId(): JSX.Element {
                 )}
               </div>
               <div>
-                <h3>Codice Cliente</h3>
+                <h3><i>Step 2.</i>Codice Cliente</h3>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -298,7 +304,7 @@ function GenerateUniqueId(): JSX.Element {
                 )}
               </div>
               <div>
-                <h3>Seleziona il Tipo di hardware utilizzato</h3>
+                <h3><i>Step 3.</i>Seleziona il Tipo di hardware utilizzato</h3>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -330,7 +336,7 @@ function GenerateUniqueId(): JSX.Element {
               </div>
 
               <div>
-                <h3>Seleziona la categoria del software impiegato</h3>
+                <h3><i>Step 4.</i>Seleziona la categoria del software impiegato</h3>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -491,43 +497,42 @@ sx={{ my: 2 }}
             id="search"
             />
 
-      <List sx={{ bgcolor: "background.paper" }}>
-        {idHistory
-          .filter((id) => id.includes(searchTerm))
-          .map((id) => (
-            <ListItem
-              key={id}
-              secondaryAction={
-                <IconButton
-                  edge="end"
-                  aria-label="delete"
-                  onClick={() => removeIdFromHistory(id)}
-                >
-                  <Delete />
-                </IconButton>
-              }
-            >
-              <ListItemIcon>
-                <Inventory2Outlined />
-              </ListItemIcon>
-              <ListItemText primary={id} />
-            </ListItem>
-          ))}
-      </List>
+<List sx={{ bgcolor: "background.paper" }}>
+          {idHistory
+            .filter((id) => id.includes(searchTerm))
+            .map((id) => (
+              <ListItem
+                key={id}
+                secondaryAction={
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    onClick={() => removeIdFromHistory(id)}
+              
+              
+                  >
+                    <Delete />
+                  </IconButton>
+                }
+              >
+                <ListItemIcon>
+                  <Inventory2Outlined />
+                </ListItemIcon>
+                <ListItemText primary={id} />
+              </ListItem>
+            ))}
+        </List>
+      </Box>
 
       <Box sx={{ mt: 2 }}>
         <Button
           variant="contained"
           color="secondary"
-          onClick={() => {
-            localStorage.removeItem("idHistory");
-            setIdHistory([]);
-          }}
+          onClick={handleRemoveAll}
         >
           Elimina cronologia
         </Button>
       </Box>
-    </Box>
       </Container>
     </>
   );
