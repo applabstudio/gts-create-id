@@ -5,7 +5,7 @@ const BannerBackground = () => {
     return (
         <Box
         sx={{
-          height: '50vh',
+          height: '20vh',
           backgroundImage: `url(${Banner})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
