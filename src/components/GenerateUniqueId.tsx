@@ -14,19 +14,34 @@ import {
   ListItemText,
   IconButton,
   InputAdornment,
-  Divider
+  Divider,
+  Paper
 } from "@mui/material";
 import {
   Add,
   Delete,
-  Inventory2Outlined,
   SearchOutlined,
   AccessTimeOutlined,
+  Work
 } from "@mui/icons-material";
 import ArticleIcon from "@mui/icons-material/Article";
 import Papa from "papaparse";
 import Header from "./Header";
 import BannerBackground from "./BannerBackground";
+import CodificaTable from "./CodificaTable";
+
+const tableData = [
+  {
+    versione: '[A1]: Sigla in ordine alfabetico con numero progressivo per versione del progetto indicato a cliente (es: versione A1, A2, ...)',
+    codiceCliente: '[001]: Numero progressivo per codice cliente esempio (es: 001,002,003 ecc)',
+    tipoHardware: '[HA]: Sigla per tipo hardware utilizzato vedi schema legenda tecnica in ordine alfabetico es: HA(es: HA, HB)',
+    categoriaSoftware: '[CSA]: Sigla in ordine alfabetico per categoria del software impiegato (es: CSA, CSB, CSC, CSD ecc)',
+    numeroProgressivo: '[000]: Numero progressivo del progetto indipendente dalla tipologia di utilizzo',
+    tipologiaUtilizzo: '[DH]: Sigla per tipologia di utilizzo (es: DH= domotica)',
+    tipoSoftware: '[V]: Sigla per identificazione del tipo di software vedi legenda',
+  }
+];
+
 
 interface Article {
   name: string;
@@ -229,7 +244,21 @@ function GenerateUniqueId(): JSX.Element {
     element.click();
   }
   
-
+  function exportAllToCsv(articles: Article[]): void {
+    const rows: any[] = [["ID Commessa"]];
+    articles.forEach((article) => {
+      rows.push([article.uniqueId]);
+    });
+    const csvContent = Papa.unparse(rows);
+    const element = document.createElement("a");
+    const file = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    element.href = URL.createObjectURL(file);
+    element.download = "filtered_articles.csv";
+    document.body.appendChild(element);
+    element.click();
+  }
+  
+  
 
   return (
     <>
@@ -239,28 +268,9 @@ function GenerateUniqueId(): JSX.Element {
         <Box sx={{ mt: 5 }}>
           <Grid container spacing={2} style={{ justifyContent: "center" }}>
             <Grid>
-              <div>
-                <h4>Struttura di codifica</h4>
-                <p style={{ color: "grey", textAlign:'justify'}}>
-                  <b style={{color:'green'}}>[A1]:</b> Versione del progetto indicato a cliente (es:
-                  versione A1, A2, ...)
-                  <br />
-                  <b style={{color:'green'}}>[001]:</b> Codice cliente esempio (es: 001,002,003 ecc)
-                  <br />
-                  <b style={{color:'green'}}>[HA]:</b> Tipo hardware utilizzato vedi schema legenda
-                  tecnica in ordine alfabetico es: HA(es: HA, HB)
-                  <br />
-                  <b style={{color:'green'}}>[CSA]:</b> Categoria del software impiegato (es: CSA)
-                  <br />
-                  <b style={{color:'green'}}>[000]:</b> Numero progressivo del progetto indipendente
-                  dalla tipologia di utilizzo
-                  <br />
-                  <b style={{color:'green'}}>[DH]:</b> Tipologia di utilizzo DH= domotica
-                  <br />
-                  <b style={{color:'green'}}>[V]:</b> Identificazione del tipo di software vedi legenda
-                  <br />
-                </p>
-              </div>
+
+              <CodificaTable data={tableData}/>
+
               <div>
                 <h3><i>Step 1.</i> Versione del progetto indicato a cliente</h3>
                 <FormControlLabel
@@ -406,9 +416,28 @@ function GenerateUniqueId(): JSX.Element {
             Aggiungi ID Commessa
           </Button>
         </Box>
-        <Typography variant="h6" align="left" sx={{ mt: 2 }} >
-          Commesse generate oggi
-        </Typography>
+        
+        <Paper elevation={3} sx={{ p: 2, my: 2 }}>
+
+      
+        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
+  <Typography variant="h6" align="left">
+    Commesse generate oggi
+  </Typography>
+
+  {articles.length > 0 && (
+      <Button
+        variant="contained"
+        color="secondary"
+        sx={{ bgcolor: 'green', '&:hover': { bgcolor: 'darkgreen' } }}
+        startIcon={<ArticleIcon />}
+        onClick={() => exportAllToCsv(articles)}
+      >
+        Esporta tutti in CSV
+      </Button>
+    )}
+</Box>
+</Paper>
         {/* <Box sx={{ mt: 4 }}>
           <TextField
             label="Cerca"
@@ -460,7 +489,7 @@ function GenerateUniqueId(): JSX.Element {
                   </div>
                 }
               >
-                <Inventory2Outlined></Inventory2Outlined>
+                <Work/>
                 <ListItemText
                   primary={article.name}
                   secondary={article.uniqueId}
@@ -516,7 +545,7 @@ sx={{ my: 2 }}
                 }
               >
                 <ListItemIcon>
-                  <Inventory2Outlined />
+                <Work/>
                 </ListItemIcon>
                 <ListItemText primary={id} />
               </ListItem>
