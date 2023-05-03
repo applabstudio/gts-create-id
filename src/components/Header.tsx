@@ -13,7 +13,8 @@ import {
   Switch,
 } from '@mui/material';
 import { Menu, Home } from '@mui/icons-material';
-import Logo from "../assets/images/logo.png";
+import LightLogo from "../assets/images/light-logo.png";
+import DarkLogo from "../assets/images/dark-logo.png";
 
 type HeaderProps = {
   title: string;
@@ -52,7 +53,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
               <Menu />
             </IconButton>
             <Typography variant="h6" sx={{ flexGrow: 1 }}>
-              <img src={Logo} width={120} alt={'Logo'}/> {title}
+              <img src={darkMode ? DarkLogo : LightLogo} width={120} alt={'Logo'}/> {title}
             </Typography>
             <Switch checked={darkMode} onChange={handleDarkModeToggle} color="default" />
             <Button color="inherit" href="#search">Cerca</Button>
