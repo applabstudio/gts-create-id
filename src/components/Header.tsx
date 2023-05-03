@@ -53,13 +53,13 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
   return (
     <div>
       <AppBar position="static" color={darkMode ? 'default' : 'primary'}>
-        <Toolbar sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: 'center' }}>
+        <Toolbar sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: 'start' }}>
           <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
-            <Menu />
-          </IconButton>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            <Menu /> <Typography variant="h6" sx={{ flexGrow: 1 }}>
             <img src={darkMode ? DarkLogo : LightLogo} width={120} alt={'Logo'}/> {title}
           </Typography>
+          </IconButton>
+         
           <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
             <Switch checked={darkMode} onChange={handleDarkModeToggle} color="default" />
             <Button color="inherit" href="#search">Cerca</Button>

@@ -91,18 +91,35 @@ function downloadCsv() {
 function CodificaTable({ data }: CodificaTableProps) {
   return (
     <>
-      <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: 'space-between;' }}>
-        <h2>Tabella di codifica commesse</h2>
-        <Button
-          variant="contained"
-          color="success"
-          onClick={downloadCsv}
-          style={{ height: "40px", marginLeft: "12px" }}
-          startIcon={<Download />}
-        >
-          Scarica la tabella di codifica commesse
-        </Button>
-      </Box>
+     <Box sx={{
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "start",
+  justifyContent: 'start',
+  textAlign: 'center',
+  '@media (min-width: 600px)': {
+    flexDirection: "row",
+    justifyContent: 'space-between',
+    textAlign: 'left',
+    alignItems: 'baseline'
+  }
+}}>
+  <h2 style={{marginBottom: "16px"}}>Tabella di codifica commesse</h2>
+  <Button
+    variant="contained"
+    color="success"
+    onClick={downloadCsv}
+    style={{
+      height: "40px",
+      minWidth: "120px",
+      whiteSpace: "nowrap",
+      marginBottom: "16px",
+    }}
+    startIcon={<Download />}
+  >
+    Scarica la tabella di codifica commesse
+  </Button>
+</Box>
 
       <TableContainer component={Paper} sx={{ maxWidth: '100%' }}>
         <Table sx={{ minWidth: 650, overflowX: 'auto' }} aria-label="codifica table">

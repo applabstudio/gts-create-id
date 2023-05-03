@@ -456,44 +456,65 @@ function GenerateUniqueId(): JSX.Element {
         </Box> */}
 
         <Box sx={{ mt: 4 }}>
-          <List>
+        <List sx={{ display: 'flex', flexDirection: 'column' }}>
+          
             {filteredArticles.map((article) => (
               <ListItem
                 key={article.uniqueId}
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'start',
+                }}
                 secondaryAction={
-                  <div>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => exportToTxt(filteredArticles)}
-                      startIcon={<ArticleIcon />}
-                    >
-                      Esporta in TXT
-                    </Button>
-                    <Button
-                      sx={{ ml: 1 }}
-            variant="contained"
-            color="secondary"
-            onClick={() => exportToCsv(filteredArticles)}
-            startIcon={<ArticleIcon />}
-          >
-            Esporta in CSV
-          </Button>
-                    <IconButton
-                      edge="end"
-                      aria-label="delete"
-                      onClick={() => removeArticle(article)}
-                    >
-                      <Delete />
-                    </IconButton>
-                  </div>
+                  <div style={{ display: 'flex' }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => exportToTxt([article])}
+              startIcon={<ArticleIcon />}
+              sx={{ marginRight: '8px' }}
+            >
+              Esporta in TXT
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => exportToCsv([article])}
+              startIcon={<ArticleIcon />}
+              sx={{ marginRight: '8px' }}
+            >
+              Esporta in CSV
+            </Button>
+            <IconButton
+              edge="end"
+              aria-label="delete"
+              onClick={() => removeArticle(article)}
+            >
+              <Delete />
+            </IconButton>
+            
+          </div>
+          
                 }
               >
-                <img src={CommessaIcon} alt="commessa" width={42}/>
-                <ListItemText
-                  primary={article.name}
-                  secondary={article.uniqueId}
-                />
+           
+           <Box sx={{
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  '@media (min-width:600px)': {
+    flexDirection: 'row',
+    alignItems: 'center',
+  }
+}}>
+  <img src={CommessaIcon} alt="commessa" width={42}/>
+  <ListItemText
+    primary={article.name}
+    secondary={article.uniqueId}
+    sx={{ display: 'flex', flexDirection: 'column' }}
+  />
+</Box>
               </ListItem>
             ))}
           </List>

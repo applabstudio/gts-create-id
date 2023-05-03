@@ -30,7 +30,17 @@ const BannerBackground = () => {
         },
       }}
     >
-      <img src={CommessaIcon} alt="commessa" width={100}/><h1>Generatore codice commesse</h1>
+<Box sx={{
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+  backgroundColor: "#f0f0f0",
+  padding: "16px",
+  marginTop: '38px'
+}}>
+  <img src={CommessaIcon} alt="commessa" width={100} />
+  <h1 style={{ marginLeft: "16px", fontSize: "24px" }}>Generatore codice commesse</h1>
+</Box>
     </Box>
   );
 };
