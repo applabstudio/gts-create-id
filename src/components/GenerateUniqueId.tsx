@@ -19,7 +19,8 @@ import {
   Delete,
   Inventory2Outlined,
   SearchOutlined,
-} from "@mui/icons-material";
+} from "@mui/icons-material"
+import ArticleIcon from '@mui/icons-material/Article';
 import Header from "./Header";
 import BannerBackground from "./BannerBackground";
 
@@ -85,6 +86,7 @@ function GenerateUniqueId(): JSX.Element {
   const [versionProject, setVersionProject] = useState<number>(1);
   const [codeCustomer, setCodeCustomer] = useState<number>(1);
 
+ 
   function handleOptionChange(option: keyof Options) {
     setOptions({
       ...options,
@@ -181,6 +183,18 @@ function GenerateUniqueId(): JSX.Element {
       article.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  function exportToTxt(filteredArticles: Article[]): void {
+    const content = filteredArticles.map((article) => `${article.name}, ${article.uniqueId}`).join('\r\n').replace(/^, /, '');
+    const element = document.createElement('a');
+    const file = new Blob([content], { type: 'text/plain' });
+    element.href = URL.createObjectURL(file);
+    element.download = 'filtered_articles.txt';
+    document.body.appendChild(element);
+    element.click();
+  }
+  
+  
+
   return (
     <>
       {/* <Box
@@ -210,23 +224,15 @@ function GenerateUniqueId(): JSX.Element {
             <Grid>
               <div>
                 <h4>Struttura di codifica</h4>
-                <samp> 
-       [V] [DH][000][CSA][HA][001][A1]  <br/>
-          |   |	  |   |   |   |   |
-          |   |	  |   |   |   |   |------------ Versione del progetto indicato a cliente (es: versione A1, A2, ...)<br/>
-          |   |	  |   |   |   |  
-          |   |   |   |   |   |---------------- Codice cliente esempio (es: 001,002,003 ecc)<br/>
-          |   |   |   |   |   
-          |   |   |   |   |-------------------- Tipo hardware utilizzato vedi schema legenda tecnica in ordine alfabetico es: HA(es: HA, HB)<br/>
-          |   |	  |   |
-          |   |	  |   |------------------------ Categoria del software impiegato (es: CSA)<br/>
-          |   |   |  
-          |   |	  |---------------------------- Numero progressivo del progetto indipendente dalla tipologia di utilizzo<br/>
-          |   |
-          |   |-------------------------------- Tipologia di utilizzo DH= domotica<br/>
-          |
-          |------------------------------------ Identificazione del tipo di software vedi legenda<br/>
-</samp>
+                <samp style={{color: "orange"}}> 
+                  <b>[A1]:</b> Versione del progetto indicato a cliente (es: versione A1, A2, ...)<br/>
+                  <b>[001]:</b> Codice cliente esempio (es: 001,002,003 ecc)<br/>
+                  <b>[HA]:</b>Tipo hardware utilizzato vedi schema legenda tecnica in ordine alfabetico es: HA(es: HA, HB)<br/>
+                  <b>[CSA]:</b> Categoria del software impiegato (es: CSA)<br/>
+                  <b>[000]:</b> Numero progressivo del progetto indipendente dalla tipologia di utilizzo<br/>
+                  <b>[DH]:</b>Tipologia di utilizzo DH= domotica<br/>
+                  <b>[V]:</b>Identificazione del tipo di software vedi legenda<br/>
+                </samp>
               </div>
               <div>
                 <h3>Versione del progetto indicato a cliente</h3>
@@ -396,17 +402,28 @@ function GenerateUniqueId(): JSX.Element {
           <List>
             {filteredArticles.map((article) => (
               <ListItem
-                key={article.uniqueId}
-                secondaryAction={
-                  <IconButton
-                    edge="end"
-                    aria-label="delete"
-                    onClick={() => removeArticle(article)}
-                  >
-                    <Delete />
-                  </IconButton>
-                }
-              >
+              key={article.uniqueId}
+              secondaryAction={
+                <div>
+                  <Button
+  variant="contained"
+  color="primary"
+  onClick={() => exportToTxt(filteredArticles)}
+  startIcon={<ArticleIcon />}
+>
+  Esporta in TXT
+</Button>
+                   <IconButton
+                  edge="end"
+                  aria-label="delete"
+                  onClick={() => removeArticle(article)}
+                >
+                 
+                  <Delete />
+                </IconButton>
+                </div>
+              }
+            >
                 <Inventory2Outlined></Inventory2Outlined>
                 <ListItemText
                   primary={article.name}
