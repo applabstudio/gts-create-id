@@ -12,8 +12,8 @@ import {
   ListItemText,
   Switch,
   Box,
-  useTheme,
-  useMediaQuery,
+  // useTheme,
+  // useMediaQuery,
 } from '@mui/material';
 import { Menu, Home, History } from '@mui/icons-material';
 import { Search as SearchIcon } from '@mui/icons-material';
@@ -28,8 +28,8 @@ type HeaderProps = {
 const Header: React.FC<HeaderProps> = ({ title }) => {
   const [open, setOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  // const theme = useTheme();
+  // const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const toggleDrawer = (isOpen: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
     if (
@@ -54,7 +54,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
   return (
     <div>
       <AppBar position="static" color={darkMode ? 'default' : 'primary'}>
-        <Toolbar sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: 'center' }}>
+        <Toolbar sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
           <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
             <Menu />
           </IconButton>

@@ -410,47 +410,62 @@ function GenerateUniqueId(): JSX.Element {
           style={{ display: "flex", justifyContent: "center" }}
         >
           <Button variant="contained" startIcon={<Add />} onClick={addArticle}>
-            Aggiungi ID Commessa
+            Crea codice commessa
           </Button>
         </Box>
         
-        <Paper elevation={3} sx={{ p: 2, my: 2 }}>
+        <Divider sx={{ my: 2, borderColor: 'primary.main' }} />
 
+        <Box sx={{ my: 6, display: 'flex', flexDirection: {xs: 'column', md: 'row'}, alignItems: {xs: 'stretch', md: 'center'}, justifyContent: 'space-between' }}>
+
+        <Typography variant="h6" align="left" sx={{ fontSize: { xs: '1.2rem', md: '2rem' }, mb: {xs: 2, md: 0}, textAlign: {xs: 'center', md: 'left'} }}>
+  Commesse generate oggi
+  
+</Typography>
+
+
+{articles.length > 0 && (
+  <>
+  <Box>
+
+  <Button
+  variant="contained"
+  color="secondary"
+  sx={{
+    bgcolor: 'green',
+    '&:hover': { bgcolor: 'darkgreen' },
+    fontSize: { xs: 'small' },
+    width: { xs: '100%', md: '300px'}
+  }}
+  startIcon={<ArticleIcon />}
+  onClick={() => exportAllToCsv(articles)}
+>
+  <Typography sx={{ fontSize: { xs: 'small' } }}>Esporta tutti in CSV</Typography>
+</Button>
+<br/>
+{/* <TextField
+      id="search"
+      label="Cerca"
+      variant="outlined"
+      color="primary"
+      size="small"
       
-        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
-  <Typography variant="h6" align="left">
-    Commesse generate oggi
-  </Typography>
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <SearchOutlined />
+          </InputAdornment>
+        ),
+      }}
+      sx={{ width: { xs: '100%', md: '100%' }, mt: { xs: 2, md: 2 } }}
+    /> */}
+  </Box>
+  
+  </>
+)}
 
-  {articles.length > 0 && (
-      <Button
-        variant="contained"
-        color="secondary"
-        sx={{ bgcolor: 'green', '&:hover': { bgcolor: 'darkgreen' } }}
-        startIcon={<ArticleIcon />}
-        onClick={() => exportAllToCsv(articles)}
-      >
-        Esporta tutti in CSV
-      </Button>
-    )}
 </Box>
-</Paper>
-        {/* <Box sx={{ mt: 4 }}>
-          <TextField
-            label="Cerca"
-            type="text"
-            value={searchTerm}
-            onChange={handleSearchTermChange}
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchOutlined></SearchOutlined>
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Box> */}
+
 
         <Box sx={{ mt: 4 }}>
         <List sx={{ display: 'flex', flexDirection: 'column' }}>
