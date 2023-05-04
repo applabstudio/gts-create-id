@@ -467,25 +467,34 @@ function GenerateUniqueId(): JSX.Element {
 </Box>
 
 
-        <Box sx={{ mt: 4 }}>
-        <List sx={{ display: 'flex', flexDirection: 'column' }}>
-          
-            {filteredArticles.map((article) => (
-              <ListItem
-                key={article.uniqueId}
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'start',
-                }}
-                secondaryAction={
-                  <div style={{ display: 'flex' }}>
+<Box sx={{ mt: 4 }}>
+  <List sx={{ display: 'flex', flexDirection: 'column' }}>
+    {filteredArticles.map((article) => (
+      <ListItem
+        key={article.uniqueId}
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
+          alignItems: 'start',
+          justifyContent: 'space-between',
+        }}
+        secondaryAction={
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: { xs: 'column', md: 'row' },
+              flexWrap: 'wrap',
+              alignItems: { xs: 'flex-start', md: 'center' },
+              justifyContent: { xs: 'space-between', md: 'flex-end' },
+              marginTop: { xs: '8px', md: 0 },
+            }}
+          >
             <Button
               variant="contained"
               color="primary"
               onClick={() => exportToTxt([article])}
               startIcon={<ArticleIcon />}
-              sx={{ marginRight: '8px' }}
+              sx={{ marginRight: { xs: '8px', md: '16px' }, marginBottom: { xs: '8px', md: 0 } }}
             >
               Esporta in TXT
             </Button>
@@ -494,43 +503,45 @@ function GenerateUniqueId(): JSX.Element {
               color="secondary"
               onClick={() => exportToCsv([article])}
               startIcon={<ArticleIcon />}
-              sx={{ marginRight: '8px' }}
+              sx={{ marginRight: { xs: '8px', md: '16px' }, marginBottom: { xs: '8px', md: 0 } }}
             >
               Esporta in CSV
             </Button>
-            <IconButton
-              edge="end"
-              aria-label="delete"
-              onClick={() => removeArticle(article)}
-            >
-              <Delete />
-            </IconButton>
-            
-          </div>
-          
-                }
-              >
-           
-           <Box sx={{
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-start',
-  '@media (min-width:600px)': {
-    flexDirection: 'row',
-    alignItems: 'center',
-  }
-}}>
-  <img src={CommessaIcon} alt="commessa" width={42}/>
-  <ListItemText
-    primary={article.name}
-    secondary={article.uniqueId}
-    sx={{ display: 'flex', flexDirection: 'column' }}
-  />
-</Box>
-              </ListItem>
-            ))}
-          </List>
+            <IconButton 
+  edge="end" 
+  aria-label="delete" 
+  onClick={() => removeArticle(article)}
+  sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
+>
+  <Delete />
+</IconButton>
+          </Box>
+        }
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            '@media (min-width:600px)': {
+              flexDirection: 'row',
+              alignItems: 'center',
+            },
+          }}
+        >
+          <img src={CommessaIcon} alt="commessa" width={42} />
+          <ListItemText
+            primary={article.name}
+            secondary={article.uniqueId}
+            sx={{ display: 'flex', flexDirection: 'column' }}
+          />
         </Box>
+      </ListItem>
+    ))}
+  </List>
+</Box>
+
+
 
         <Divider sx={{ my: 2, borderColor: 'primary.main' }} />
 
