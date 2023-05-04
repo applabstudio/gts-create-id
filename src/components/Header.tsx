@@ -16,6 +16,7 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { Menu, Home, History } from '@mui/icons-material';
+import { Search as SearchIcon } from '@mui/icons-material';
 import LightLogo from "../assets/images/light-logo.png";
 import DarkLogo from "../assets/images/dark-logo.png";
 import { Link } from 'react-router-dom';
@@ -64,8 +65,8 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
           </Typography>
           <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
             <Switch checked={darkMode} onChange={handleDarkModeToggle} color="default" />
-            <Button color="inherit" href="#search">Cerca</Button>
-          </Box>
+            <Button color="inherit" href="#search" startIcon={<SearchIcon />}>Cerca commessa</Button>
+        </Box>
         </Toolbar>
       </AppBar>
       <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
