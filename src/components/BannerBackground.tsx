@@ -36,7 +36,11 @@ const BannerBackground = () => {
   alignItems: "center",
   backgroundColor: "#f0f0f0",
   padding: "16px",
-  marginTop: '38px'
+  marginBottom: '80px',
+  minWidth: "100%",
+  "@media screen and (max-width: 700px)": {
+    marginTop: '105px',
+  },
 }}>
   <img src={CommessaIcon} alt="commessa" width={100} />
   <h1 style={{ marginLeft: "16px", fontSize: "24px" }}>Generatore codice commesse</h1>

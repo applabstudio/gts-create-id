@@ -111,9 +111,9 @@ function CodificaTable({ data }: CodificaTableProps) {
     onClick={downloadCsv}
     style={{
       height: "40px",
-      minWidth: "120px",
-      whiteSpace: "nowrap",
-      marginBottom: "16px",
+      maxWidth: "100%",
+      marginBottom: "14px",
+      fontSize: '12px'
     }}
     startIcon={<Download />}
   >

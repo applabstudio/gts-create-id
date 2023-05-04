@@ -15,9 +15,10 @@ import {
   useTheme,
   useMediaQuery,
 } from '@mui/material';
-import { Menu, Home } from '@mui/icons-material';
+import { Menu, Home, History } from '@mui/icons-material';
 import LightLogo from "../assets/images/light-logo.png";
 import DarkLogo from "../assets/images/dark-logo.png";
+import { Link } from 'react-router-dom';
 
 type HeaderProps = {
   title: string;
@@ -46,20 +47,21 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
 
   const menuItems = [
     { label: 'Home', icon: <Home />, path: '/' },
-    // { label: 'About', icon: <Inbox />, path: '/about' },
-    // { label: 'Contact', icon: <Inbox />, path: '/contact' },
+    { label: 'Cronologia ID Commesse', icon: <History />, path: '/history' },
   ];
 
   return (
     <div>
       <AppBar position="static" color={darkMode ? 'default' : 'primary'}>
-        <Toolbar sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: 'start' }}>
+        <Toolbar sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: 'center' }}>
           <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
-            <Menu /> <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            <img src={darkMode ? DarkLogo : LightLogo} width={120} alt={'Logo'}/> {title}
-          </Typography>
+            <Menu />
           </IconButton>
-         
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
+              <img src={darkMode ? DarkLogo : LightLogo} width={120} alt={'Logo'} /> {title}
+            </Link>
+          </Typography>
           <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
             <Switch checked={darkMode} onChange={handleDarkModeToggle} color="default" />
             <Button color="inherit" href="#search">Cerca</Button>
@@ -69,16 +71,17 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
       <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
         <List>
           {menuItems.map((item) => (
-            <ListItem button key={item.label} component="a" href={item.path}>
+            <ListItem button key={item.label} onClick={() => setOpen(false)}>
               <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.label} />
+              <Link to={item.path} style={{ color: 'inherit', textDecoration: 'none' }}>
+                <ListItemText primary={item.label} />
+              </Link>
             </ListItem>
           ))}
         </List>
       </Drawer>
     </div>
   );
-  
 };
 
 export default Header;

@@ -25,8 +25,6 @@ import {
 } from "@mui/icons-material";
 import ArticleIcon from "@mui/icons-material/Article";
 import Papa from "papaparse";
-import Header from "./Header";
-import BannerBackground from "./BannerBackground";
 import CodificaTable from "./CodificaTable";
 import CommessaIcon from '../assets/images/commessa.png';
 
@@ -262,8 +260,7 @@ function GenerateUniqueId(): JSX.Element {
 
   return (
     <>
-      <Header title="" />
-      <BannerBackground />
+      
       <Container sx={{ py: 2 }}>
         <Box sx={{ mt: 2 }}>
           <Grid>
@@ -526,7 +523,7 @@ function GenerateUniqueId(): JSX.Element {
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
   <AccessTimeOutlined sx={{ mr: 1 }} />
   <Typography variant="h5" component="h3">
-    Cronologia ID Commesse generate
+    Cronologia commesse generate
   </Typography>
 </Box>
 
