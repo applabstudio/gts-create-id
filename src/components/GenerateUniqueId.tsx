@@ -14,32 +14,40 @@ import {
   ListItemText,
   IconButton,
   InputAdornment,
-  Divider,
-  Paper
+  Divider
 } from "@mui/material";
 import {
   Add,
   Delete,
   SearchOutlined,
-  AccessTimeOutlined
+  AccessTimeOutlined,
 } from "@mui/icons-material";
 import ArticleIcon from "@mui/icons-material/Article";
 import Papa from "papaparse";
 import CodificaTable from "./CodificaTable";
-import CommessaIcon from '../assets/images/commessa.png';
+import CommessaIcon from "../assets/images/commessa.png";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const tableData = [
   {
-    versione: '[A1]: Sigla in ordine alfabetico con numero progressivo per versione del progetto indicato a cliente (es: versione A1, A2, ...)',
-    codiceCliente: '[001]: Numero progressivo per codice cliente esempio (es: 001,002,003 ecc)',
-    tipoHardware: '[HA]: Sigla per tipo hardware utilizzato vedi schema legenda tecnica in ordine alfabetico es: HA(es: HA, HB)',
-    categoriaSoftware: '[CSA]: Sigla in ordine alfabetico per categoria del software impiegato (es: CSA, CSB, CSC, CSD ecc)',
-    numeroProgressivo: '[000]: Numero progressivo del progetto indipendente dalla tipologia di utilizzo',
-    tipologiaUtilizzo: '[DH]: Sigla per tipologia di utilizzo (es: DH= domotica)',
-    tipoSoftware: '[V]: Sigla per identificazione del tipo di software vedi legenda',
-  }
+    versione:
+      "[A1]: Sigla in ordine alfabetico con numero progressivo per versione del progetto indicato a cliente (es: versione A1, A2, ...)",
+    codiceCliente:
+      "[001]: Numero progressivo per codice cliente esempio (es: 001,002,003 ecc)",
+    tipoHardware:
+      "[HA]: Sigla per tipo hardware utilizzato vedi schema legenda tecnica in ordine alfabetico es: HA(es: HA, HB)",
+    categoriaSoftware:
+      "[CSA]: Sigla in ordine alfabetico per categoria del software impiegato (es: CSA, CSB, CSC, CSD ecc)",
+    numeroProgressivo:
+      "[000]: Numero progressivo del progetto indipendente dalla tipologia di utilizzo",
+    tipologiaUtilizzo:
+      "[DH]: Sigla per tipologia di utilizzo (es: DH= domotica)",
+    tipoSoftware:
+      "[V]: Sigla per identificazione del tipo di software vedi legenda",
+  },
 ];
-
 
 interface Article {
   name: string;
@@ -64,8 +72,6 @@ interface Options {
   categorySoftwareA: boolean;
   categorySoftwareB: boolean;
   categorySoftwareC: boolean;
-  brand: boolean;
-  model: boolean;
   serialNumber: boolean;
   versionProject: boolean;
   codeCustomer: boolean;
@@ -90,8 +96,6 @@ function GenerateUniqueId(): JSX.Element {
     categorySoftwareA: false,
     categorySoftwareB: false,
     categorySoftwareC: false,
-    brand: false,
-    model: false,
     serialNumber: false,
     versionProject: false,
     codeCustomer: false,
@@ -131,27 +135,52 @@ function GenerateUniqueId(): JSX.Element {
     if (options.categorySoftwareA) uniqueId += "CSA";
     if (options.categorySoftwareB) uniqueId += "CSB";
     if (options.categorySoftwareC) uniqueId += "CSC";
-
-    if (options.brand) uniqueId += "BR";
-    if (options.model) uniqueId += "MD";
     if (options.serialNumber) uniqueId += `SN${serialNumber}`;
     return uniqueId;
   }
 
   function addArticle() {
-    const newArticle: Article = {
-      name: "",
-      uniqueId: generateUniqueId(),
-    };
-    setArticles([...articles, newArticle]);
-    setIdHistory([...idHistory, newArticle.uniqueId]);
-    setSerialNumber(serialNumber + 1);
-    setVersionProject(versionProject + 1);
-    setCodeCustomer(codeCustomer + 1);
-    const newIdHistory = [...idHistory, newArticle.uniqueId];
-    setIdHistory(newIdHistory);
-    // Salva gli ID storici nel localStorage
-    localStorage.setItem("idHistory", JSON.stringify(newIdHistory));
+    if (
+      (options.hardwareUsedA ||
+        options.hardwareUsedB ||
+        options.hardwareUsedC ||
+        options.hardwareUsedD ||
+        options.hardwareUsedE ||
+        options.hardwareUsedF ||
+        options.hardwareUsedG ||
+        options.hardwareUsedH ||
+        options.hardwareUsedI ||
+        options.hardwareUsedL ||
+        options.hardwareUsedM ||
+        options.hardwareUsedN ||
+        options.hardwareUsedO ||
+        options.hardwareUsedP) &&
+      (options.categorySoftwareA ||
+        options.categorySoftwareB ||
+        options.categorySoftwareC)
+    ) {
+      // Codice per creare l'articolo
+      // tutte le checkbox sono selezionate
+      // puoi creare l'articolo qui
+      const newArticle: Article = {
+        name: "",
+        uniqueId: generateUniqueId(),
+      };
+      setArticles([...articles, newArticle]);
+      setIdHistory([...idHistory, newArticle.uniqueId]);
+      setSerialNumber(serialNumber + 1);
+      setVersionProject(versionProject + 1);
+      setCodeCustomer(codeCustomer + 1);
+      const newIdHistory = [...idHistory, newArticle.uniqueId];
+      setIdHistory(newIdHistory);
+      // Salva gli ID storici nel localStorage
+      localStorage.setItem("idHistory", JSON.stringify(newIdHistory));
+      toast.success("Commessa creata con successo!");
+    } else {
+      // non tutte le checkbox sono selezionate
+      // mostra un messaggio di errore o fai qualcosa per impedire la creazione dell'articoloa
+      toast.error("Non tutti i campi sono compilati!");
+    }
   }
 
   function loadIdHistory() {
@@ -178,24 +207,10 @@ function GenerateUniqueId(): JSX.Element {
     localStorage.setItem("idHistory", JSON.stringify(idHistory));
   };
 
-
   const handleRemoveAll = () => {
     localStorage.removeItem("idHistory");
     setIdHistory([]);
   };
-  
-
-  // function handleSearchTermChange(event: React.ChangeEvent<HTMLInputElement>) {
-  //   setSearchTerm(event.target.value);
-  // }
-
-
-
-  // function handleSerialNumberChange(
-  //   event: React.ChangeEvent<HTMLInputElement>
-  // ) {
-  //   setSerialNumber(Number(event.target.value));
-  // }
 
   function handleVersionProjectChange(
     event: React.ChangeEvent<HTMLInputElement>
@@ -241,7 +256,7 @@ function GenerateUniqueId(): JSX.Element {
     document.body.appendChild(element);
     element.click();
   }
-  
+
   function exportAllToCsv(articles: Article[]): void {
     const rows: any[] = [["ID Commessa"]];
     articles.forEach((article) => {
@@ -255,26 +270,25 @@ function GenerateUniqueId(): JSX.Element {
     document.body.appendChild(element);
     element.click();
   }
-  
-  
 
   return (
     <>
-      
       <Container sx={{ py: 2 }}>
         <Box sx={{ mt: 2 }}>
           <Grid>
             <Grid>
-
-              <CodificaTable data={tableData}/>
+              <CodificaTable data={tableData} />
 
               <div>
-                <h3><i>Step 1.</i> Versione del progetto indicato a cliente</h3>
+                <h3>
+                  <i>Step 1.</i> Versione del progetto indicato a cliente
+                </h3>
                 <FormControlLabel
                   control={
                     <Checkbox
                       checked={options.versionProject}
                       onChange={() => handleOptionChange("versionProject")}
+                      required
                     />
                   }
                   label="Inserisci Versione Progetto"
@@ -286,16 +300,20 @@ function GenerateUniqueId(): JSX.Element {
                     value={versionProject}
                     onChange={handleVersionProjectChange}
                     fullWidth
+                    required
                   />
                 )}
               </div>
               <div>
-                <h3><i>Step 2.</i>Codice Cliente</h3>
+                <h3>
+                  <i>Step 2.</i>Codice Cliente
+                </h3>
                 <FormControlLabel
                   control={
                     <Checkbox
                       checked={options.codeCustomer}
                       onChange={() => handleOptionChange("codeCustomer")}
+                      required
                     />
                   }
                   label="Inserisci Codice Cliente"
@@ -307,16 +325,20 @@ function GenerateUniqueId(): JSX.Element {
                     value={codeCustomer}
                     onChange={handleCodeCustomerChange}
                     fullWidth
+                    required
                   />
                 )}
               </div>
               <div>
-                <h3><i>Step 3.</i>Seleziona il Tipo di hardware utilizzato</h3>
+                <h3>
+                  <i>Step 3.</i>Seleziona il Tipo di hardware utilizzato
+                </h3>
                 <FormControlLabel
                   control={
                     <Checkbox
                       checked={options.hardwareUsedA}
                       onChange={() => handleOptionChange("hardwareUsedA")}
+                      required
                     />
                   }
                   label="Bilancia intelligente"
@@ -326,6 +348,7 @@ function GenerateUniqueId(): JSX.Element {
                     <Checkbox
                       checked={options.hardwareUsedB}
                       onChange={() => handleOptionChange("hardwareUsedB")}
+                      required
                     />
                   }
                   label="Processore Verticale"
@@ -336,6 +359,7 @@ function GenerateUniqueId(): JSX.Element {
                     <Checkbox
                       checked={options.hardwareUsedC}
                       onChange={() => handleOptionChange("hardwareUsedC")}
+                      required
                     />
                   }
                   label="PressLog"
@@ -343,12 +367,15 @@ function GenerateUniqueId(): JSX.Element {
               </div>
 
               <div>
-                <h3><i>Step 4.</i>Seleziona la categoria del software impiegato</h3>
+                <h3>
+                  <i>Step 4.</i>Seleziona la categoria del software impiegato
+                </h3>
                 <FormControlLabel
                   control={
                     <Checkbox
                       checked={options.categorySoftwareA}
                       onChange={() => handleOptionChange("categorySoftwareA")}
+                      required
                     />
                   }
                   label="Sviluppo Web Based"
@@ -358,6 +385,7 @@ function GenerateUniqueId(): JSX.Element {
                     <Checkbox
                       checked={options.categorySoftwareB}
                       onChange={() => handleOptionChange("categorySoftwareB")}
+                      required
                     />
                   }
                   label="Firmware ESP32"
@@ -368,6 +396,7 @@ function GenerateUniqueId(): JSX.Element {
                     <Checkbox
                       checked={options.categorySoftwareC}
                       onChange={() => handleOptionChange("categorySoftwareC")}
+                      required
                     />
                   }
                   label="Firmware STM32"
@@ -409,41 +438,56 @@ function GenerateUniqueId(): JSX.Element {
           sx={{ mt: 4 }}
           style={{ display: "flex", justifyContent: "center" }}
         >
+           <ToastContainer />
           <Button variant="contained" startIcon={<Add />} onClick={addArticle}>
             Crea codice commessa
           </Button>
         </Box>
-        
-        <Divider sx={{ my: 2, borderColor: 'primary.main' }} />
 
-        <Box sx={{ my: 6, display: 'flex', flexDirection: {xs: 'column', md: 'row'}, alignItems: {xs: 'stretch', md: 'center'}, justifyContent: 'space-between' }}>
+        <Divider sx={{ my: 2, borderColor: "primary.main" }} />
 
-        <Typography variant="h6" align="left" sx={{ fontSize: { xs: '1.2rem', md: '2rem' }, mb: {xs: 2, md: 0}, textAlign: {xs: 'center', md: 'left'} }}>
-  Commesse generate oggi
-  
-</Typography>
+        <Box
+          sx={{
+            my: 6,
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            alignItems: { xs: "stretch", md: "center" },
+            justifyContent: "space-between",
+          }}
+        >
+          <Typography
+            variant="h6"
+            align="left"
+            sx={{
+              fontSize: { xs: "1.2rem", md: "2rem" },
+              mb: { xs: 2, md: 0 },
+              textAlign: { xs: "center", md: "left" },
+            }}
+          >
+            Commesse generate oggi
+          </Typography>
 
-
-{articles.length > 0 && (
-  <>
-  <Box>
-
-  <Button
-  variant="contained"
-  color="secondary"
-  sx={{
-    bgcolor: 'green',
-    '&:hover': { bgcolor: 'darkgreen' },
-    fontSize: { xs: 'small' },
-    width: { xs: '100%', md: '300px'}
-  }}
-  startIcon={<ArticleIcon />}
-  onClick={() => exportAllToCsv(articles)}
->
-  <Typography sx={{ fontSize: { xs: 'small' } }}>Esporta tutti in CSV</Typography>
-</Button>
-<br/>
-{/* <TextField
+          {articles.length > 0 && (
+            <>
+              <Box>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  sx={{
+                    bgcolor: "green",
+                    "&:hover": { bgcolor: "darkgreen" },
+                    fontSize: { xs: "small" },
+                    width: { xs: "100%", md: "300px" },
+                  }}
+                  startIcon={<ArticleIcon />}
+                  onClick={() => exportAllToCsv(articles)}
+                >
+                  <Typography sx={{ fontSize: { xs: "small" } }}>
+                    Esporta tutti in CSV
+                  </Typography>
+                </Button>
+                <br />
+                {/* <TextField
       id="search"
       label="Cerca"
       variant="outlined"
@@ -459,106 +503,107 @@ function GenerateUniqueId(): JSX.Element {
       }}
       sx={{ width: { xs: '100%', md: '100%' }, mt: { xs: 2, md: 2 } }}
     /> */}
-  </Box>
-  
-  </>
-)}
-
-</Box>
-
-
-<Box sx={{ mt: 4 }}>
-  <List sx={{ display: 'flex', flexDirection: 'column' }}>
-    {filteredArticles.map((article) => (
-      <ListItem
-        key={article.uniqueId}
-        sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column', md: 'row' },
-          alignItems: 'start',
-          justifyContent: 'space-between',
-        }}
-        secondaryAction={
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: { xs: 'column', md: 'row' },
-              flexWrap: 'wrap',
-              alignItems: { xs: 'flex-start', md: 'center' },
-              justifyContent: { xs: 'space-between', md: 'flex-end' },
-              marginTop: { xs: '8px', md: 0 },
-            }}
-          >
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => exportToTxt([article])}
-              startIcon={<ArticleIcon />}
-              sx={{ marginRight: { xs: '8px', md: '16px' }, marginBottom: { xs: '8px', md: 0 } }}
-            >
-              Esporta in TXT
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => exportToCsv([article])}
-              startIcon={<ArticleIcon />}
-              sx={{ marginRight: { xs: '8px', md: '16px' }, marginBottom: { xs: '8px', md: 0 } }}
-            >
-              Esporta in CSV
-            </Button>
-            <IconButton 
-  edge="end" 
-  aria-label="delete" 
-  onClick={() => removeArticle(article)}
-  sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
->
-  <Delete />
-</IconButton>
-          </Box>
-        }
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-            '@media (min-width:600px)': {
-              flexDirection: 'row',
-              alignItems: 'center',
-            },
-          }}
-        >
-          <img src={CommessaIcon} alt="commessa" width={42} />
-          <ListItemText
-            primary={article.name}
-            secondary={article.uniqueId}
-            sx={{ display: 'flex', flexDirection: 'column' }}
-          />
+              </Box>
+            </>
+          )}
         </Box>
-      </ListItem>
-    ))}
-  </List>
-</Box>
 
+        <Box sx={{ mt: 4 }}>
+          <List sx={{ display: "flex", flexDirection: "column" }}>
+            {filteredArticles.map((article) => (
+              <ListItem
+                key={article.uniqueId}
+                sx={{
+                  display: "flex",
+                  flexDirection: { xs: "column", md: "row" },
+                  alignItems: "start",
+                  justifyContent: "space-between",
+                }}
+                secondaryAction={
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: { xs: "column", md: "row" },
+                      flexWrap: "wrap",
+                      alignItems: { xs: "flex-start", md: "center" },
+                      justifyContent: { xs: "space-between", md: "flex-end" },
+                      marginTop: { xs: "8px", md: 0 },
+                    }}
+                  >
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => exportToTxt([article])}
+                      startIcon={<ArticleIcon />}
+                      sx={{
+                        marginRight: { xs: "8px", md: "16px" },
+                        marginBottom: { xs: "8px", md: 0 },
+                      }}
+                    >
+                      Esporta in TXT
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => exportToCsv([article])}
+                      startIcon={<ArticleIcon />}
+                      sx={{
+                        marginRight: { xs: "8px", md: "16px" },
+                        marginBottom: { xs: "8px", md: 0 },
+                      }}
+                    >
+                      Esporta in CSV
+                    </Button>
+                    <IconButton
+                      edge="end"
+                      aria-label="delete"
+                      onClick={() => removeArticle(article)}
+                      sx={{ display: { xs: "none", sm: "inline-flex" } }}
+                    >
+                      <Delete />
+                    </IconButton>
+                  </Box>
+                }
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                    "@media (min-width:600px)": {
+                      flexDirection: "row",
+                      alignItems: "center",
+                    },
+                  }}
+                >
+                  <img src={CommessaIcon} alt="commessa" width={42} />
+                  <ListItemText
+                    primary={article.name}
+                    secondary={article.uniqueId}
+                    sx={{ display: "flex", flexDirection: "column" }}
+                  />
+                </Box>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
 
+        <Divider sx={{ my: 2, borderColor: "primary.main" }} />
 
-        <Divider sx={{ my: 2, borderColor: 'primary.main' }} />
+        <Box>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <AccessTimeOutlined sx={{ mr: 1 }} />
+            <Typography variant="h5" component="h3">
+              Cronologia commesse generate
+            </Typography>
+          </Box>
 
-    <Box>
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-  <AccessTimeOutlined sx={{ mr: 1 }} />
-  <Typography variant="h5" component="h3">
-    Cronologia commesse generate
-  </Typography>
-</Box>
-
-<TextField
-sx={{ my: 2 }}
+          <TextField
+            sx={{ my: 2 }}
             label="Cerca"
             type="text"
             value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => setSearchTerm(e.target.value)}
             fullWidth
             InputProps={{
               startAdornment: (
@@ -568,44 +613,42 @@ sx={{ my: 2 }}
               ),
             }}
             id="search"
-            />
+          />
 
-<List sx={{ bgcolor: "background.paper" }}>
-          {idHistory
-            .filter((id) => id.includes(searchTerm))
-            .map((id) => (
-              <ListItem
-                key={id}
-                secondaryAction={
-                  <IconButton
-                    edge="end"
-                    aria-label="delete"
-                    onClick={() => removeIdFromHistory(id)}
-              
-              
-                  >
-                    <Delete />
-                  </IconButton>
-                }
-              >
-                <ListItemIcon>
-                <img src={CommessaIcon} alt="commessa" width={42}/>
-                </ListItemIcon>
-                <ListItemText primary={id} />
-              </ListItem>
-            ))}
-        </List>
-      </Box>
+          <List sx={{ bgcolor: "background.paper" }}>
+            {idHistory
+              .filter((id) => id.includes(searchTerm))
+              .map((id) => (
+                <ListItem
+                  key={id}
+                  secondaryAction={
+                    <IconButton
+                      edge="end"
+                      aria-label="delete"
+                      onClick={() => removeIdFromHistory(id)}
+                    >
+                      <Delete />
+                    </IconButton>
+                  }
+                >
+                  <ListItemIcon>
+                    <img src={CommessaIcon} alt="commessa" width={42} />
+                  </ListItemIcon>
+                  <ListItemText primary={id} />
+                </ListItem>
+              ))}
+          </List>
+        </Box>
 
-      <Box sx={{ mt: 2 }}>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleRemoveAll}
-        >
-          Elimina cronologia
-        </Button>
-      </Box>
+        <Box sx={{ mt: 2 }}>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleRemoveAll}
+          >
+            Elimina cronologia
+          </Button>
+        </Box>
       </Container>
     </>
   );
