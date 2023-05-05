@@ -14,7 +14,12 @@ import {
   ListItemText,
   IconButton,
   InputAdornment,
-  Divider
+  Divider,
+  Dialog,
+  DialogActions,
+  DialogContent, 
+  DialogContentText,
+  DialogTitle
 } from "@mui/material";
 import {
   Add,
@@ -163,7 +168,7 @@ function GenerateUniqueId(): JSX.Element {
       // tutte le checkbox sono selezionate
       // puoi creare l'articolo qui
       const newArticle: Article = {
-        name: "",
+        name: "codice commessa",
         uniqueId: generateUniqueId(),
       };
       setArticles([...articles, newArticle]);
@@ -207,9 +212,21 @@ function GenerateUniqueId(): JSX.Element {
     localStorage.setItem("idHistory", JSON.stringify(idHistory));
   };
 
+
+  const [open, setOpen] = useState(false);
   const handleRemoveAll = () => {
-    localStorage.removeItem("idHistory");
+    setOpen(true);
+  };
+
+  const handleConfirmRemoveAll = () => {
+    // Aggiungi qui la logica per eliminare la cronologia
+        localStorage.removeItem("idHistory");
     setIdHistory([]);
+    setOpen(false);
+  };
+
+  const handleCancelRemoveAll = () => {
+    setOpen(false);
   };
 
   function handleVersionProjectChange(
@@ -486,23 +503,6 @@ function GenerateUniqueId(): JSX.Element {
                     Esporta tutti in CSV
                   </Typography>
                 </Button>
-                <br />
-                {/* <TextField
-      id="search"
-      label="Cerca"
-      variant="outlined"
-      color="primary"
-      size="small"
-      
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <SearchOutlined />
-          </InputAdornment>
-        ),
-      }}
-      sx={{ width: { xs: '100%', md: '100%' }, mt: { xs: 2, md: 2 } }}
-    /> */}
               </Box>
             </>
           )}
@@ -578,10 +578,29 @@ function GenerateUniqueId(): JSX.Element {
                 >
                   <img src={CommessaIcon} alt="commessa" width={42} />
                   <ListItemText
-                    primary={article.name}
-                    secondary={article.uniqueId}
-                    sx={{ display: "flex", flexDirection: "column" }}
-                  />
+  primary={article.name}
+  secondary={article.uniqueId}
+  sx={{
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    minWidth: "200px",
+    "& .MuiListItemText-secondary": {
+      alignSelf: "flex-start",
+    },
+    "@media (min-width: 600px)": {
+      flexDirection: "row",
+      alignItems: "left",
+      "& .MuiListItemText-secondary": {
+        alignSelf: "left",
+        marginLeft: "auto",
+      },
+    },
+  }}
+/>
+
+
+
                 </Box>
               </ListItem>
             ))}
@@ -641,13 +660,28 @@ function GenerateUniqueId(): JSX.Element {
         </Box>
 
         <Box sx={{ mt: 2 }}>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleRemoveAll}
-          >
-            Elimina cronologia
+        <Button
+        variant="contained"
+        color="secondary"
+        onClick={handleRemoveAll}
+      >
+        Elimina cronologia
+      </Button>
+      <Dialog open={open} onClose={handleCancelRemoveAll}>
+        <DialogTitle>Sei sicuro di voler eliminare la cronologia?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Questa azione è irreversibile. Sei sicuro di voler eliminare la
+            cronologia?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelRemoveAll}>Annulla</Button>
+          <Button onClick={handleConfirmRemoveAll} autoFocus>
+            Elimina
           </Button>
+        </DialogActions>
+      </Dialog>
         </Box>
       </Container>
     </>
