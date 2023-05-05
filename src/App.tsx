@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import HomePage from "./pages/HomePage";
 import HistoryPage from "./pages/HistoryPage";
 import "./styles/App.css";
+import CompanyPage from "./pages/CompanyPage";
 
 const App: FC = () => {
   return (
@@ -12,6 +13,7 @@ const App: FC = () => {
       <Routes>
         <Route path="/history" element={<HistoryPage />} />
         <Route path="/" element={<HomePage />} />
+        <Route path="/code-customer" element={<CompanyPage />} />
       </Routes>
     </Router>
   );

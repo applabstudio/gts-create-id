@@ -15,7 +15,7 @@ import {
   // useTheme,
   // useMediaQuery,
 } from '@mui/material';
-import { Menu, Home, History } from '@mui/icons-material';
+import { Menu, Home, History, BadgeOutlined } from '@mui/icons-material';
 import { Search as SearchIcon } from '@mui/icons-material';
 import LightLogo from "../assets/images/light-logo.png";
 import DarkLogo from "../assets/images/dark-logo.png";
@@ -49,6 +49,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
   const menuItems = [
     { label: 'Home', icon: <Home />, path: '/' },
     { label: 'Cronologia ID Commesse', icon: <History />, path: '/history' },
+    { label: 'Codici Clienti', icon: <BadgeOutlined />, path: '/code-customer' },
   ];
 
   return (

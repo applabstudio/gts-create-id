@@ -7,3 +7,11 @@ li {
     margin-bottom: 12px;
     border-radius: 6px;
 }
+
+.notched-outline {
+    border-color: #fff !important;
+  }
+  
+  .input-label.MuiInputLabel-shrink {
+    color: #fff !important;
+  }
