@@ -16,7 +16,6 @@ const App: FC = () => {
         <meta name="description" content="Web App per commesse GTS" />
         <meta property="og:title" content="Generatore commesse GTS" />
         <meta property="og:description" content="La descrizione della tua pagina" />
-        <meta property="og:image" content="public/images/generatorecommesse.png" />
       </Helmet>
       <Header title="" />
       {/* <BannerBackground/> */}
