@@ -12,8 +12,8 @@ import {
   Grid,
   Container,
 } from "@mui/material";
-
-import { Save, Refresh, Search } from "@mui/icons-material";
+import { Save, Refresh, Search, ArticleOutlined } from "@mui/icons-material";
+import { saveAs } from 'file-saver';
 
 interface Data {
   id: number;
@@ -22,6 +22,9 @@ interface Data {
 }
 
 const initialData: Data[] = [];
+
+
+
 
 const CompanyList = () => {
   const [data, setData] = useState(initialData);
@@ -127,6 +130,18 @@ const CompanyList = () => {
     }
   };
 
+  const exportToCSV = (data: Data[]) => {
+    const csvData = [
+      ['ID', 'Codice', 'Ragione Sociale'],
+      ...data.map(item => [item.id, item.codice, item.ragioneSociale])
+    ];
+  
+    const csvString = csvData.map(row => row.join(',')).join('\n');
+  
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, 'export.csv');
+  }
+
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
       <AppBar position="static">
@@ -168,8 +183,23 @@ const CompanyList = () => {
             }}
             variant="outlined"
           />
+
         </Toolbar>
+        
       </AppBar>
+
+<Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => exportToCSV(data)}
+                      startIcon={<ArticleOutlined />}
+                      sx={{
+                        marginRight: { xs: "8px", md: "16px" },
+                        marginBottom: { xs: "8px", md: 0 },
+                        marginTop: {xs: '8px', md: '32px'},
+                      }}
+                    >  Esporta tutti in CSV
+</Button>
       <Grid container spacing={3} sx={{ marginTop: "16px" }}>
         {filteredData.map((item) => (
           <Grid item xs={12} sm={6} md={4} key={item.id}>
