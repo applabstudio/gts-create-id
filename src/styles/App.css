@@ -15,3 +15,8 @@ li {
   .input-label.MuiInputLabel-shrink {
     color: #fff !important;
   }
+
+.list-item span:nth-last-of-type(1) {
+  color: gray;
+  padding-right:10px;
+}

@@ -25,6 +25,7 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  Stack
 } from "@mui/material";
 import {
   Add,
@@ -47,6 +48,7 @@ import QRCode from "qrcode.react";
 interface Article {
   name: string;
   uniqueId: string;
+  date: string;
 }
 
 interface Options {
@@ -183,9 +185,11 @@ function GenerateUniqueId(): JSX.Element {
       // Codice per creare l'articolo
       // tutte le checkbox sono selezionate
       // puoi creare l'articolo qui
+      const now = new Date();
       const newArticle: Article = {
         name: "codice commessa",
         uniqueId: generateUniqueId(),
+        date: now.toLocaleDateString() // o now.toISOString()
       };
       setArticles([...articles, newArticle]);
       setIdHistory([...idHistory, newArticle.uniqueId]);
@@ -330,6 +334,21 @@ const handleCloseQrCodeHistory = () => {
     document.body.appendChild(element);
     element.click();
   }
+
+  function exportAllHistoryToCsv(): void {
+    const rows: any[] = [["ID Commessa"]];
+    idHistory.forEach((id) => {
+      rows.push([id]);
+    });
+    const csvContent = Papa.unparse(rows);
+    const element = document.createElement("a");
+    const file = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    element.href = URL.createObjectURL(file);
+    element.download = "history.csv";
+    document.body.appendChild(element);
+    element.click();
+  }
+  
 
   return (
     <>
@@ -513,6 +532,7 @@ const handleCloseQrCodeHistory = () => {
 
         <Box sx={{ mt: 4 }}>
           <List sx={{ display: "flex", flexDirection: "column" }}>
+            
             {filteredArticles.map((article) => (
               <ListItem
                 key={article.uniqueId}
@@ -522,8 +542,10 @@ const handleCloseQrCodeHistory = () => {
                   alignItems: "start",
                   justifyContent: "space-between",
                 }}
+                className="list-item"
                 secondaryAction={
-                  <Box
+                  <>
+        <Box
                     sx={{
                       display: "flex",
                       flexDirection: { xs: "column", md: "row" },
@@ -533,6 +555,7 @@ const handleCloseQrCodeHistory = () => {
                       marginTop: { xs: "8px", md: 0 },
                     }}
                   >
+                    
         <div key={article.uniqueId}>
           <img
             src={QrCodeIcon}
@@ -586,6 +609,8 @@ const handleCloseQrCodeHistory = () => {
                       <Delete />
                     </IconButton>
                   </Box>
+        </>
+                  
                 }
               >
                 <Box
@@ -601,7 +626,7 @@ const handleCloseQrCodeHistory = () => {
                 >
                   <img src={CommessaIcon} alt="commessa" width={42} />
                   <ListItemText
-                    primary={article.name}
+                    primary={`${article.name}  ${article.date}`}
                     secondary={article.uniqueId}
                     sx={{
                       display: "flex",
@@ -609,8 +634,8 @@ const handleCloseQrCodeHistory = () => {
                       alignItems: "flex-start",
                       minWidth: "200px",
                       "& .uniqueId": {
-                        background: "#e4e4e4",
-                        color: "black",
+                        background: "rgb(14, 14, 14);",
+                        color: "white",
                         padding: "4px",
                         borderRadius: "6px",
                         fontWeight: 800,
@@ -646,57 +671,68 @@ const handleCloseQrCodeHistory = () => {
             </Typography>
           </Box>
           <Box sx={{ mt: 2 }}>
-          <Button
-            variant="contained"
-            color="secondary"
-            startIcon={<Delete />}
-            onClick={handleRemoveAll}
-          >
-            Elimina cronologia
-          </Button>
-          <Button
-  variant="contained"
-  color="primary"
-  startIcon={< QrCodeOutlined />}
-  onClick={() => handleGenerateQrCodeHistory(JSON.stringify(idHistory))}
-  sx={{ marginLeft: "8px" }}
+        
+          {idHistory.length > 0 && (
+  <>
+    <Stack
+  direction={{ xs: 'column', sm: 'row' }}
+  alignItems={{ xs: 'center', sm: 'flex-start' }}
+  justifyContent={{ xs: 'center', sm: 'flex-start' }}
+  spacing={2}
+  sx={{ width: '100%' }}
 >
-  Genera QR Code della cronologia
-</Button>          <Dialog open={open} onClose={handleCancelRemoveAll}>
-            <DialogTitle>
-              Sei sicuro di voler eliminare la cronologia?
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                Questa azione è irreversibile. Sei sicuro di voler eliminare la
-                cronologia?
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleCancelRemoveAll}>Annulla</Button>
-              <Button onClick={handleConfirmRemoveAll} autoFocus>
-                Elimina
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </Box>
-          <TextField
-            sx={{ my: 2 }}
-            label="Cerca"
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchOutlined></SearchOutlined>
-                </InputAdornment>
-              ),
-            }}
-            id="search"
-          />
+  <Button
+    variant="contained"
+    color="secondary"
+    startIcon={<Delete />}
+    onClick={handleRemoveAll}
+    sx={{ width: '100%', mb: { xs: 0, sm: 0 } }}
+  >
+    Elimina cronologia
+  </Button>
+  <Button
+    variant="contained"
+    color="primary"
+    startIcon={<QrCodeOutlined />}
+    onClick={() => handleGenerateQrCodeHistory(JSON.stringify(idHistory))}
+    sx={{ width: '100%', ml: { xs: 0, sm: 2 } }}
+  >
+    Genera QR Code della cronologia
+  </Button>
+  <Button
+  variant="contained"
+  color="success"
+  startIcon={<ArticleIcon />}
+  onClick={exportAllHistoryToCsv}
+  sx={{ width: '100%', ml: { xs: 0, sm: 2 } }}
+>
+  Esporta cronologia completa
+</Button>
 
+</Stack>
+
+    <TextField
+      sx={{ my: 2 }}
+      label="Cerca"
+      type="text"
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      fullWidth
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <SearchOutlined></SearchOutlined>
+          </InputAdornment>
+        ),
+      }}
+      id="search"
+    />
+  </>
+)}
+
+
+
+ </Box>
           <List sx={{ bgcolor: "background.paper" }}>
             {idHistory
               .filter((id) => id.includes(searchTerm))
@@ -733,7 +769,23 @@ const handleCloseQrCodeHistory = () => {
             <Button onClick={handleCloseQrCodeHistory}>Chiudi</Button>
           </DialogActions>
         </Dialog>
-       
+        <Dialog open={open} onClose={handleCancelRemoveAll}>
+            <DialogTitle>
+              Sei sicuro di voler eliminare la cronologia?
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Questa azione è irreversibile. Sei sicuro di voler eliminare la
+                cronologia?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCancelRemoveAll}>Annulla</Button>
+              <Button onClick={handleConfirmRemoveAll} autoFocus>
+                Elimina
+              </Button>
+            </DialogActions>
+          </Dialog>
       </Container>
     </>
   );
