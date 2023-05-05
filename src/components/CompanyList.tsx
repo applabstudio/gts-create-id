@@ -15,6 +15,7 @@ import {
 import { Save, Refresh, Search, ArticleOutlined } from "@mui/icons-material";
 import { saveAs } from 'file-saver';
 
+
 interface Data {
   id: number;
   codice: string;

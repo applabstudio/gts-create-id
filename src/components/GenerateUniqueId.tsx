@@ -672,6 +672,7 @@ background: '#e4e4e4',
         <Button
         variant="contained"
         color="secondary"
+        startIcon={<Delete />}
         onClick={handleRemoveAll}
       >
         Elimina cronologia
