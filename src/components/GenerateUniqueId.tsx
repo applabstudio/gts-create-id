@@ -585,6 +585,14 @@ function GenerateUniqueId(): JSX.Element {
     flexDirection: "column",
     alignItems: "flex-start",
     minWidth: "200px",
+    "& .uniqueId": {
+background: '#e4e4e4',
+    color: 'black',
+    padding: '4px',
+    borderRadius: '6px',
+    fontWeight: 800
+    },
+    
     "& .MuiListItemText-secondary": {
       alignSelf: "flex-start",
     },
@@ -597,6 +605,7 @@ function GenerateUniqueId(): JSX.Element {
       },
     },
   }}
+    classes={{secondary: "uniqueId"}}
 />
 
 
