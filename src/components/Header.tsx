@@ -58,15 +58,30 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
         <Toolbar sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
           <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
             <Menu />
+           
           </IconButton>
+          
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
               <img src={darkMode ? DarkLogo : LightLogo} width={120} alt={'Logo'} /> {title}
             </Link>
           </Typography>
           <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
-            <Switch checked={darkMode} onChange={handleDarkModeToggle} color="default" />
+          {menuItems.map((item) => (
+              <Button
+                key={item.label}
+                color="inherit"
+                component={Link}
+                to={item.path}
+                sx={{ marginLeft: 1 }}
+                startIcon={item.icon}
+              >
+                {item.label}
+              </Button>
+            ))}
+           
             <Button color="inherit" href="#search" startIcon={<SearchIcon />}>Cerca commessa</Button>
+            <Switch checked={darkMode} onChange={handleDarkModeToggle} color="default" />
         </Box>
         </Toolbar>
       </AppBar>
@@ -81,6 +96,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
             </ListItem>
           ))}
         </List>
+        
       </Drawer>
     </div>
   );

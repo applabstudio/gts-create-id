@@ -17,15 +17,22 @@ import {
   Divider,
   Dialog,
   DialogActions,
-  DialogContent, 
+  DialogContent,
   DialogContentText,
-  DialogTitle
+  DialogTitle,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
 } from "@mui/material";
 import {
   Add,
   Delete,
   SearchOutlined,
   AccessTimeOutlined,
+  CloseOutlined,
+  QrCodeOutlined,
 } from "@mui/icons-material";
 import ArticleIcon from "@mui/icons-material/Article";
 import Papa from "papaparse";
@@ -33,26 +40,9 @@ import CodificaTable from "./CodificaTable";
 import CommessaIcon from "../assets/images/commessa.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-
-const tableData = [
-  {
-    versione:
-      "[A1]: Sigla in ordine alfabetico con numero progressivo per versione del progetto indicato a cliente (es: versione A1, A2, ...)",
-    codiceCliente:
-      "[001]: Numero progressivo per codice cliente esempio (es: 001,002,003 ecc)",
-    tipoHardware:
-      "[HA]: Sigla per tipo hardware utilizzato vedi schema legenda tecnica in ordine alfabetico es: HA(es: HA, HB)",
-    categoriaSoftware:
-      "[CSA]: Sigla in ordine alfabetico per categoria del software impiegato (es: CSA, CSB, CSC, CSD ecc)",
-    numeroProgressivo:
-      "[000]: Numero progressivo del progetto indipendente dalla tipologia di utilizzo",
-    tipologiaUtilizzo:
-      "[DH]: Sigla per tipologia di utilizzo (es: DH= domotica)",
-    tipoSoftware:
-      "[V]: Sigla per identificazione del tipo di software vedi legenda",
-  },
-];
+import { tableData } from "../data";
+import QrCodeIcon from "../assets/images/qrcode_icon.png";
+import QRCode from "qrcode.react";
 
 interface Article {
   name: string;
@@ -105,6 +95,7 @@ function GenerateUniqueId(): JSX.Element {
     versionProject: false,
     codeCustomer: false,
   });
+
   const [articles, setArticles] = useState<Article[]>([]);
   const [idHistory, setIdHistory] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -112,13 +103,40 @@ function GenerateUniqueId(): JSX.Element {
   const [versionProject, setVersionProject] = useState<number>(1);
   const [codeCustomer, setCodeCustomer] = useState<number>(1);
 
-  function handleOptionChange(option: keyof Options) {
+  function handleOptionChange1(option: keyof Options) {
     setOptions({
       ...options,
       [option]: !options[option],
     });
   }
 
+  interface Options2 {
+    categorySoftwareA: boolean;
+    categorySoftwareB: boolean;
+    categorySoftwareC: boolean;
+  }
+  interface OptionItem {
+    value: keyof Options2;
+    label: string;
+  }
+
+  const options2: OptionItem[] = [
+    { value: "categorySoftwareA", label: "Sviluppo Web Based" },
+    { value: "categorySoftwareB", label: "Firmware ESP32" },
+    { value: "categorySoftwareC", label: "Firmware STM32" },
+  ];
+
+  const [selected2, setSelected2] =
+    useState<keyof Options2>("categorySoftwareA");
+
+  function handleSelectChange2(
+    event: SelectChangeEvent<
+      "categorySoftwareA" | "categorySoftwareB" | "categorySoftwareC"
+    >
+  ) {
+    const { value } = event.target;
+    setSelected2(value as keyof Options2);
+  }
   function generateUniqueId() {
     let uniqueId = "";
     if (options.versionProject) uniqueId += `A0${versionProject}`;
@@ -160,9 +178,7 @@ function GenerateUniqueId(): JSX.Element {
         options.hardwareUsedN ||
         options.hardwareUsedO ||
         options.hardwareUsedP) &&
-      (options.categorySoftwareA ||
-        options.categorySoftwareB ||
-        options.categorySoftwareC)
+      selected2
     ) {
       // Codice per creare l'articolo
       // tutte le checkbox sono selezionate
@@ -212,15 +228,42 @@ function GenerateUniqueId(): JSX.Element {
     localStorage.setItem("idHistory", JSON.stringify(idHistory));
   };
 
-
+  // Stato per dialog
   const [open, setOpen] = useState(false);
+  const [currentArticleId, setCurrentArticleId] = useState("");
+
+  const [openQrCode, setOpenQrCode] = useState(false);
+  const [openQrCodeHistory, setOpenQrCodeHistory] = useState(false);
+
+  const handleGenerateQrCode = (articleId: string) => {
+    setCurrentArticleId(articleId);
+    setOpenQrCode(true);
+  };
+
+  const handleGenerateQrCodeHistory = (idHistory: string) => {
+    setCurrentArticleId(idHistory);
+    setOpenQrCodeHistory(true);
+  };
+
+const handleCloseQrCode = () => {
+  setCurrentArticleId("");
+  setOpenQrCode(false);
+};
+
+const handleCloseQrCodeHistory = () => {
+  setCurrentArticleId("");
+  setOpenQrCodeHistory(false);
+};
+
+ 
+
   const handleRemoveAll = () => {
     setOpen(true);
   };
 
   const handleConfirmRemoveAll = () => {
     // Aggiungi qui la logica per eliminare la cronologia
-        localStorage.removeItem("idHistory");
+    localStorage.removeItem("idHistory");
     setIdHistory([]);
     setOpen(false);
   };
@@ -304,7 +347,7 @@ function GenerateUniqueId(): JSX.Element {
                   control={
                     <Checkbox
                       checked={options.versionProject}
-                      onChange={() => handleOptionChange("versionProject")}
+                      onChange={() => handleOptionChange1("versionProject")}
                       required
                     />
                   }
@@ -329,7 +372,7 @@ function GenerateUniqueId(): JSX.Element {
                   control={
                     <Checkbox
                       checked={options.codeCustomer}
-                      onChange={() => handleOptionChange("codeCustomer")}
+                      onChange={() => handleOptionChange1("codeCustomer")}
                       required
                     />
                   }
@@ -354,7 +397,7 @@ function GenerateUniqueId(): JSX.Element {
                   control={
                     <Checkbox
                       checked={options.hardwareUsedA}
-                      onChange={() => handleOptionChange("hardwareUsedA")}
+                      onChange={() => handleOptionChange1("hardwareUsedA")}
                       required
                     />
                   }
@@ -364,7 +407,7 @@ function GenerateUniqueId(): JSX.Element {
                   control={
                     <Checkbox
                       checked={options.hardwareUsedB}
-                      onChange={() => handleOptionChange("hardwareUsedB")}
+                      onChange={() => handleOptionChange1("hardwareUsedB")}
                       required
                     />
                   }
@@ -375,7 +418,7 @@ function GenerateUniqueId(): JSX.Element {
                   control={
                     <Checkbox
                       checked={options.hardwareUsedC}
-                      onChange={() => handleOptionChange("hardwareUsedC")}
+                      onChange={() => handleOptionChange1("hardwareUsedC")}
                       required
                     />
                   }
@@ -387,66 +430,26 @@ function GenerateUniqueId(): JSX.Element {
                 <h3>
                   <i>Step 4.</i>Seleziona la categoria del software impiegato
                 </h3>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={options.categorySoftwareA}
-                      onChange={() => handleOptionChange("categorySoftwareA")}
-                      required
-                    />
-                  }
-                  label="Sviluppo Web Based"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={options.categorySoftwareB}
-                      onChange={() => handleOptionChange("categorySoftwareB")}
-                      required
-                    />
-                  }
-                  label="Firmware ESP32"
-                />
 
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={options.categorySoftwareC}
-                      onChange={() => handleOptionChange("categorySoftwareC")}
-                      required
-                    />
-                  }
-                  label="Firmware STM32"
-                />
+                <FormControl sx={{ m: 1, minWidth: 120 }}>
+                  <InputLabel id="software-category-label">
+                    Categorie software
+                  </InputLabel>
+                  <Select
+                    labelId="software-category-label"
+                    id="software-category-select"
+                    value={selected2}
+                    onChange={handleSelectChange2}
+                    label="Categoria Software"
+                  >
+                    {options2.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </div>
-
-              {/* <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={options.model}
-                    onChange={() => handleOptionChange("model")}
-                  />
-                }
-                label="Modello"
-              /> */}
-              {/* <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={options.serialNumber}
-                    onChange={() => handleOptionChange("serialNumber")}
-                  />
-                }
-                label="Numero Progressivo"
-              />
-              {options.serialNumber && (
-                <TextField
-                  label="Inizio numero progressivo"
-                  type="number"
-                  value={serialNumber}
-                  onChange={handleSerialNumberChange}
-                  fullWidth
-                />
-              )} */}
             </Grid>
           </Grid>
         </Box>
@@ -455,7 +458,7 @@ function GenerateUniqueId(): JSX.Element {
           sx={{ mt: 4 }}
           style={{ display: "flex", justifyContent: "center" }}
         >
-           <ToastContainer />
+          <ToastContainer />
           <Button variant="contained" startIcon={<Add />} onClick={addArticle}>
             Crea codice commessa
           </Button>
@@ -530,6 +533,26 @@ function GenerateUniqueId(): JSX.Element {
                       marginTop: { xs: "8px", md: 0 },
                     }}
                   >
+        <div key={article.uniqueId}>
+          <img
+            src={QrCodeIcon}
+            alt="QR code"
+            style={{ width: 36, marginRight: 12, cursor: "pointer" }}
+            onClick={() => {
+              handleGenerateQrCode(article.uniqueId);
+            }}
+          />
+        </div>
+
+      <Dialog open={openQrCode} onClose={handleCloseQrCode}>
+        <DialogContent style={{ textAlign: "center" }}>
+          <QRCode value={currentArticleId} size={256} />
+          <br />
+          <Button onClick={handleCloseQrCode}><CloseOutlined /></Button>
+        </DialogContent>
+      </Dialog>
+
+
                     <Button
                       variant="contained"
                       color="primary"
@@ -578,38 +601,35 @@ function GenerateUniqueId(): JSX.Element {
                 >
                   <img src={CommessaIcon} alt="commessa" width={42} />
                   <ListItemText
-  primary={article.name}
-  secondary={article.uniqueId}
-  sx={{
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    minWidth: "200px",
-    "& .uniqueId": {
-background: '#e4e4e4',
-    color: 'black',
-    padding: '4px',
-    borderRadius: '6px',
-    fontWeight: 800
-    },
-    
-    "& .MuiListItemText-secondary": {
-      alignSelf: "flex-start",
-    },
-    "@media (min-width: 600px)": {
-      flexDirection: "row",
-      alignItems: "left",
-      "& .MuiListItemText-secondary": {
-        alignSelf: "left",
-        marginLeft: "auto",
-      },
-    },
-  }}
-    classes={{secondary: "uniqueId"}}
-/>
+                    primary={article.name}
+                    secondary={article.uniqueId}
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                      minWidth: "200px",
+                      "& .uniqueId": {
+                        background: "#e4e4e4",
+                        color: "black",
+                        padding: "4px",
+                        borderRadius: "6px",
+                        fontWeight: 800,
+                      },
 
-
-
+                      "& .MuiListItemText-secondary": {
+                        alignSelf: "flex-start",
+                      },
+                      "@media (min-width: 600px)": {
+                        flexDirection: "row",
+                        alignItems: "left",
+                        "& .MuiListItemText-secondary": {
+                          alignSelf: "left",
+                          marginLeft: "auto",
+                        },
+                      },
+                    }}
+                    classes={{ secondary: "uniqueId" }}
+                  />
                 </Box>
               </ListItem>
             ))}
@@ -625,7 +645,41 @@ background: '#e4e4e4',
               Cronologia commesse generate
             </Typography>
           </Box>
-
+          <Box sx={{ mt: 2 }}>
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<Delete />}
+            onClick={handleRemoveAll}
+          >
+            Elimina cronologia
+          </Button>
+          <Button
+  variant="contained"
+  color="primary"
+  startIcon={< QrCodeOutlined />}
+  onClick={() => handleGenerateQrCodeHistory(JSON.stringify(idHistory))}
+  sx={{ marginLeft: "8px" }}
+>
+  Genera QR Code della cronologia
+</Button>          <Dialog open={open} onClose={handleCancelRemoveAll}>
+            <DialogTitle>
+              Sei sicuro di voler eliminare la cronologia?
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Questa azione è irreversibile. Sei sicuro di voler eliminare la
+                cronologia?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCancelRemoveAll}>Annulla</Button>
+              <Button onClick={handleConfirmRemoveAll} autoFocus>
+                Elimina
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </Box>
           <TextField
             sx={{ my: 2 }}
             label="Cerca"
@@ -650,13 +704,16 @@ background: '#e4e4e4',
                 <ListItem
                   key={id}
                   secondaryAction={
-                    <IconButton
+                    <>
+                           <IconButton
                       edge="end"
                       aria-label="delete"
                       onClick={() => removeIdFromHistory(id)}
                     >
                       <Delete />
                     </IconButton>
+                    </>
+             
                   }
                 >
                   <ListItemIcon>
@@ -667,32 +724,16 @@ background: '#e4e4e4',
               ))}
           </List>
         </Box>
-
-        <Box sx={{ mt: 2 }}>
-        <Button
-        variant="contained"
-        color="secondary"
-        startIcon={<Delete />}
-        onClick={handleRemoveAll}
-      >
-        Elimina cronologia
-      </Button>
-      <Dialog open={open} onClose={handleCancelRemoveAll}>
-        <DialogTitle>Sei sicuro di voler eliminare la cronologia?</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Questa azione è irreversibile. Sei sicuro di voler eliminare la
-            cronologia?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancelRemoveAll}>Annulla</Button>
-          <Button onClick={handleConfirmRemoveAll} autoFocus>
-            Elimina
-          </Button>
-        </DialogActions>
-      </Dialog>
-        </Box>
+        <Dialog open={openQrCodeHistory} onClose={handleCloseQrCodeHistory}>
+          <DialogTitle>Commessa in cronologia</DialogTitle>
+          <DialogContent>
+            <QRCode value={idHistory.join(",")} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseQrCodeHistory}>Chiudi</Button>
+          </DialogActions>
+        </Dialog>
+       
       </Container>
     </>
   );
