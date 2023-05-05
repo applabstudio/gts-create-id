@@ -28,7 +28,7 @@ interface CodificaTableProps {
   }[];
 }
 
-const tableData = [
+export const tableData = [
   {
     versione: "A1",
     codiceCliente: "001",

@@ -37,13 +37,13 @@ import {
 } from "@mui/icons-material";
 import ArticleIcon from "@mui/icons-material/Article";
 import Papa from "papaparse";
-import CodificaTable from "./CodificaTable";
 import CommessaIcon from "../assets/images/commessa.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { tableData } from "../data";
 import QrCodeIcon from "../assets/images/qrcode_icon.png";
 import QRCode from "qrcode.react";
+import TableToggleButton from "./TableToggleButton";
+import { tableData } from "./CodificaTable";
 
 interface Article {
   name: string;
@@ -187,7 +187,7 @@ function GenerateUniqueId(): JSX.Element {
       // puoi creare l'articolo qui
       const now = new Date();
       const newArticle: Article = {
-        name: "codice commessa",
+        name: "codice commessa: ",
         uniqueId: generateUniqueId(),
         date: now.toLocaleDateString() // o now.toISOString()
       };
@@ -258,8 +258,6 @@ const handleCloseQrCodeHistory = () => {
   setCurrentArticleId("");
   setOpenQrCodeHistory(false);
 };
-
- 
 
   const handleRemoveAll = () => {
     setOpen(true);
@@ -356,7 +354,8 @@ const handleCloseQrCodeHistory = () => {
         <Box sx={{ mt: 2 }}>
           <Grid>
             <Grid>
-              <CodificaTable data={tableData} />
+              
+             <TableToggleButton data={tableData} />
 
               <div>
                 <h3>
@@ -626,35 +625,55 @@ const handleCloseQrCodeHistory = () => {
                 >
                   <img src={CommessaIcon} alt="commessa" width={42} />
                   <ListItemText
-                    primary={`${article.name}  ${article.date}`}
-                    secondary={article.uniqueId}
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "flex-start",
-                      minWidth: "200px",
-                      "& .uniqueId": {
-                        background: "rgb(14, 14, 14);",
-                        color: "white",
-                        padding: "4px",
-                        borderRadius: "6px",
-                        fontWeight: 800,
-                      },
-
-                      "& .MuiListItemText-secondary": {
-                        alignSelf: "flex-start",
-                      },
-                      "@media (min-width: 600px)": {
-                        flexDirection: "row",
-                        alignItems: "left",
-                        "& .MuiListItemText-secondary": {
-                          alignSelf: "left",
-                          marginLeft: "auto",
-                        },
-                      },
-                    }}
-                    classes={{ secondary: "uniqueId" }}
-                  />
+  primary={
+    <>
+      <span className="name">{article.name}</span>
+      <br />
+      <span>{article.date}</span>
+    </>
+  }
+  secondary={article.uniqueId}
+  sx={{
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    minWidth: "200px",
+    "& .uniqueId": {
+      background: "rgb(14, 14, 14);",
+      color: "white",
+      padding: "4px",
+      borderRadius: "6px",
+      fontWeight: 800,
+    },
+    "& .MuiListItemText-secondary": {
+      alignSelf: "flex-start",
+    },
+    "@media (max-width: 600px)": {
+      flexDirection: "column",
+      alignItems: "left",
+      "& .name": {
+        fontSize: "10px",
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+      },
+    },
+    "@media (min-width: 600px)": {
+      flexDirection: "row",
+      alignItems: "left",
+      "& .MuiListItemText-secondary": {
+        alignSelf: "left",
+        marginLeft: "2px",
+      },
+      "& .name": {
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+      },
+    },
+  }}
+  classes={{ secondary: "uniqueId" }}
+/>
                 </Box>
               </ListItem>
             ))}
