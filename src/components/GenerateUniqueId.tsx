@@ -42,8 +42,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import QrCodeIcon from "../assets/images/qrcode_icon.png";
 import QRCode from "qrcode.react";
-import TableToggleButton from "./TableToggleButton";
-import { tableData } from "./CodificaTable";
+import TableToggleButton from "./Table/TableToggleButton";
+import { tableData } from "../data";
 
 interface Article {
   name: string;
@@ -357,7 +357,7 @@ const handleCloseQrCodeHistory = () => {
               
              <TableToggleButton data={tableData} />
 
-              <div>
+              <div        id="start">
                 <h3>
                   <i>Step 1.</i> Versione del progetto indicato a cliente
                 </h3>
@@ -475,6 +475,7 @@ const handleCloseQrCodeHistory = () => {
         <Box
           sx={{ mt: 4 }}
           style={{ display: "flex", justifyContent: "center" }}
+   
         >
           <ToastContainer />
           <Button variant="contained" startIcon={<Add />} onClick={addArticle}>
@@ -570,7 +571,7 @@ const handleCloseQrCodeHistory = () => {
         <DialogContent style={{ textAlign: "center" }}>
           <QRCode value={currentArticleId} size={256} />
           <br />
-          <Button onClick={handleCloseQrCode}><CloseOutlined /></Button>
+          <Button onClick={handleCloseQrCode}><CloseOutlined />Chiudi</Button>
         </DialogContent>
       </Dialog>
 
@@ -780,12 +781,12 @@ const handleCloseQrCodeHistory = () => {
           </List>
         </Box>
         <Dialog open={openQrCodeHistory} onClose={handleCloseQrCodeHistory}>
-          <DialogTitle>Commessa in cronologia</DialogTitle>
+          <DialogTitle>Cronologia commesse</DialogTitle>
           <DialogContent>
             <QRCode value={idHistory.join(",")} />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseQrCodeHistory}>Chiudi</Button>
+            <Button onClick={handleCloseQrCodeHistory}><CloseOutlined />Chiudi</Button>
           </DialogActions>
         </Dialog>
         <Dialog open={open} onClose={handleCancelRemoveAll}>

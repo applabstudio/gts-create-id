@@ -15,6 +15,7 @@ import {
   Box,
 } from "@mui/material";
 import { Download } from "@mui/icons-material";
+import { tableData } from "src/data";
 
 interface CodificaTableProps {
   data: {
@@ -27,54 +28,6 @@ interface CodificaTableProps {
     tipoSoftware: string;
   }[];
 }
-
-export const tableData = [
-  {
-    versione: "A1",
-    codiceCliente: "001",
-    tipoHardware: "HA",
-    categoriaSoftware: "CSA",
-    numeroProgressivo: "000",
-    tipologiaUtilizzo: "DH",
-    tipoSoftware: "V",
-  },
-  {
-    versione: "A2",
-    codiceCliente: "003",
-    tipoHardware: "HB",
-    categoriaSoftware: "CSA",
-    numeroProgressivo: "001",
-    tipologiaUtilizzo: "DH",
-    tipoSoftware: "V",
-  },
-  {
-    versione: "B1",
-    codiceCliente: "004",
-    tipoHardware: "HA",
-    categoriaSoftware: "CSB",
-    numeroProgressivo: "002",
-    tipologiaUtilizzo: "DH",
-    tipoSoftware: "V",
-  },
-  {
-    versione: "C1",
-    codiceCliente: "002",
-    tipoHardware: "HA",
-    categoriaSoftware: "CSC",
-    numeroProgressivo: "003",
-    tipologiaUtilizzo: "DH",
-    tipoSoftware: "V",
-  },
-  {
-    versione: "D1",
-    codiceCliente: "005",
-    tipoHardware: "HA",
-    categoriaSoftware: "CSD",
-    numeroProgressivo: "004",
-    tipologiaUtilizzo: "DH",
-    tipoSoftware: "V",
-  },
-];
 
 function downloadCsv() {
   const csvData = tableData
