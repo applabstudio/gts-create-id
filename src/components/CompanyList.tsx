@@ -13,7 +13,8 @@ import {
   Dialog, 
   DialogActions, 
   DialogContent, 
-  DialogTitle
+  DialogTitle,
+  Box
 } from "@mui/material";
 import { Save, Refresh, Search, ArticleOutlined, PersonAdd } from "@mui/icons-material";
 import { saveAs } from "file-saver";
@@ -201,36 +202,45 @@ const CompanyList = () => {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    "@media (max-width: 600px)": {
-      fontSize: '1.5rem',
-      paddingY: 2,
-    }
+    flexDirection: { xs: 'column', md: 'row' },
+    textAlign: { xs: "center", md: "left" },
   }}
 >
 
-            Lista codici clienti
-            <div>
-            <Button
-        variant="contained"
-        color="secondary"
-        onClick={() => exportToCSV(data)}
-        startIcon={<ArticleOutlined />}
-      >
-        {" "}
-        Esporta tutti in CSV
-      </Button>
-      <Button variant="contained" onClick={() => setOpenModal(true)}  sx={{ marginLeft: 2}} startIcon={<PersonAdd/>}>Aggiungi nuovo utente</Button>
+    Lista codici clienti
 
-            </div>
-            
-          </Typography>
+  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' , mt: { xs: 2, md: 0 } }}>
+  <Button
+  variant="contained"
+  color="secondary"
+  onClick={() => exportToCSV(data)}
+  startIcon={<ArticleOutlined />}
+  sx={{ marginRight: { xs: 1, md: 2 } ,
+    fontSize: { xs: "0.8rem", md: "inherit" },
+  }}
+>
+  Esporta tutti in CSV
+</Button>
+<Button
+  variant="contained"
+  onClick={() => setOpenModal(true)}
+  startIcon={<PersonAdd />}
+  sx={{
+    fontSize: { xs: "0.8rem", md: "inherit" },
+  }}
+>
+  Aggiungi nuovo utente
+</Button>
+
+  </Box>
+</Typography>
+
           
           <TextField
             id="search"
             label="Cerca codice cliente"
             type="search"
             onChange={(e) => setSearch(e.target.value)}
-            sx={{mt: 4}}
             InputProps={{
               endAdornment: <Search sx={{ color: "black" }} />,
               sx: {
