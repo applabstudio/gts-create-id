@@ -21,7 +21,7 @@ const menuItems: MenuItem[] = [
     label: "Clienti",
     icon: <BadgeOutlinedIcon />,
     path: "/code-customer",
-    hash: "start",
+    hash: "clienti",
   }
 ];
 

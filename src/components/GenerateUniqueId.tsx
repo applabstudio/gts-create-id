@@ -501,6 +501,7 @@ sx={{ mb: 2, mt:2 }}
         <Box
           sx={{ mt: 4 }}
           style={{ display: "flex", justifyContent: "center" }}
+          id="start"
         >
           <ToastContainer />
           <Button variant="contained" startIcon={<Add />} onClick={addArticle}>
@@ -603,7 +604,7 @@ sx={{ mb: 2, mt:2 }}
                                   src={qrCodeImage}
                                   alt={`Articolo ${article.uniqueId}`}
                                 />
-                                <p>{`Commessa:  ${article.uniqueId}`}</p>
+                                <p>{`Commessa: ${article.uniqueId}`}</p>
                               </div>
                             ) : (
                               <div
