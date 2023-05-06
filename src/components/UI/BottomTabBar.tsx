@@ -4,7 +4,6 @@ import { Link, useLocation } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import HistoryIcon from "@mui/icons-material/History";
 import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import AddIcon from "@mui/icons-material/Add";
 
 interface MenuItem {

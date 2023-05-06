@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   Checkbox,
@@ -8,6 +8,7 @@ import {
   TextField,
   Typography,
   Button,
+  Collapse,
   List,
   ListItem,
   ListItemIcon,
@@ -25,7 +26,7 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
-  Stack
+  Stack,
 } from "@mui/material";
 import {
   Add,
@@ -36,6 +37,7 @@ import {
   QrCodeOutlined,
 } from "@mui/icons-material";
 import ArticleIcon from "@mui/icons-material/Article";
+import PrintIcon from "@mui/icons-material/Print";
 import Papa from "papaparse";
 import CommessaIcon from "../assets/images/commessa.png";
 import { ToastContainer, toast } from "react-toastify";
@@ -44,6 +46,8 @@ import QrCodeIcon from "../assets/images/qrcode_icon.png";
 import QRCode from "qrcode.react";
 import TableToggleButton from "./Table/TableToggleButton";
 import { tableData } from "../data";
+import { useReactToPrint } from "react-to-print";
+import html2canvas from "html2canvas";
 
 interface Article {
   name: string;
@@ -189,7 +193,7 @@ function GenerateUniqueId(): JSX.Element {
       const newArticle: Article = {
         name: "codice commessa: ",
         uniqueId: generateUniqueId(),
-        date: now.toLocaleDateString() // o now.toISOString()
+        date: now.toLocaleDateString(), // o now.toISOString()
       };
       setArticles([...articles, newArticle]);
       setIdHistory([...idHistory, newArticle.uniqueId]);
@@ -234,30 +238,50 @@ function GenerateUniqueId(): JSX.Element {
 
   // Stato per dialog
   const [open, setOpen] = useState(false);
-  const [currentArticleId, setCurrentArticleId] = useState("");
 
   const [openQrCode, setOpenQrCode] = useState(false);
   const [openQrCodeHistory, setOpenQrCodeHistory] = useState(false);
 
   const handleGenerateQrCode = (articleId: string) => {
-    setCurrentArticleId(articleId);
     setOpenQrCode(true);
   };
 
+  const [isPrinting, setIsPrinting] = useState(false);
+  const [qrCodeImage, setQrCodeImage] = useState<string | null>(null);
+  const [showButtonPrint, setShowButtonPrint] = useState(true);
+
+  useEffect(() => {
+    if (isPrinting) {
+      setShowButtonPrint(false);
+      const node = componentRef.current;
+      if (node) {
+        html2canvas(node).then((canvas) => {
+          setQrCodeImage(canvas.toDataURL());
+        });
+      }
+    }
+  }, [isPrinting]);
+
+  const componentRef = useRef(null);
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    onAfterPrint: () => {
+      setIsPrinting(false);
+      setShowButtonPrint(true);
+    },
+  });
+
   const handleGenerateQrCodeHistory = (idHistory: string) => {
-    setCurrentArticleId(idHistory);
     setOpenQrCodeHistory(true);
   };
 
-const handleCloseQrCode = () => {
-  setCurrentArticleId("");
-  setOpenQrCode(false);
-};
+  const handleCloseQrCode = () => {
+    setOpenQrCode(false);
+  };
 
-const handleCloseQrCodeHistory = () => {
-  setCurrentArticleId("");
-  setOpenQrCodeHistory(false);
-};
+  const handleCloseQrCodeHistory = () => {
+    setOpenQrCodeHistory(false);
+  };
 
   const handleRemoveAll = () => {
     setOpen(true);
@@ -346,7 +370,6 @@ const handleCloseQrCodeHistory = () => {
     document.body.appendChild(element);
     element.click();
   }
-  
 
   return (
     <>
@@ -354,34 +377,34 @@ const handleCloseQrCodeHistory = () => {
         <Box sx={{ mt: 2 }}>
           <Grid>
             <Grid>
-              
-             <TableToggleButton data={tableData} />
+              <TableToggleButton data={tableData} />
 
-              <div        id="start">
-                <h3>
-                  <i>Step 1.</i> Versione del progetto indicato a cliente
-                </h3>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={options.versionProject}
-                      onChange={() => handleOptionChange1("versionProject")}
-                      required
-                    />
-                  }
-                  label="Inserisci Versione Progetto"
-                />
-                {options.versionProject && (
-                  <TextField
-                    label="Inizio versione progetto"
-                    type="number"
-                    value={versionProject}
-                    onChange={handleVersionProjectChange}
-                    fullWidth
-                    required
-                  />
-                )}
-              </div>
+              <div>
+<Typography variant="h5">
+<i>Step 1.</i> Versione del progetto indicato a cliente
+</Typography>
+<FormControlLabel
+control={
+<Checkbox
+checked={options.versionProject}
+onChange={() => handleOptionChange1("versionProject")}
+required
+/>
+}
+label="Inserisci Versione Progetto"
+/>
+<Collapse in={options.versionProject}>
+<TextField
+label="Inizio versione progetto"
+type="number"
+value={versionProject}
+onChange={handleVersionProjectChange}
+fullWidth
+required
+sx={{ mb: 2, mt:2 }}
+/>
+</Collapse>
+</div>
               <div>
                 <h3>
                   <i>Step 2.</i>Codice Cliente
@@ -396,6 +419,7 @@ const handleCloseQrCodeHistory = () => {
                   }
                   label="Inserisci Codice Cliente"
                 />
+                <Collapse in={options.codeCustomer}>
                 {options.codeCustomer && (
                   <TextField
                     label="Inizio codice cliente"
@@ -404,8 +428,10 @@ const handleCloseQrCodeHistory = () => {
                     onChange={handleCodeCustomerChange}
                     fullWidth
                     required
+                    sx={{ mb: 2, mt:2 }}
                   />
                 )}
+                </Collapse>
               </div>
               <div>
                 <h3>
@@ -475,7 +501,6 @@ const handleCloseQrCodeHistory = () => {
         <Box
           sx={{ mt: 4 }}
           style={{ display: "flex", justifyContent: "center" }}
-   
         >
           <ToastContainer />
           <Button variant="contained" startIcon={<Add />} onClick={addArticle}>
@@ -532,7 +557,6 @@ const handleCloseQrCodeHistory = () => {
 
         <Box sx={{ mt: 4 }}>
           <List sx={{ display: "flex", flexDirection: "column" }}>
-            
             {filteredArticles.map((article) => (
               <ListItem
                 key={article.uniqueId}
@@ -545,72 +569,109 @@ const handleCloseQrCodeHistory = () => {
                 className="list-item"
                 secondaryAction={
                   <>
-        <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: { xs: "column", md: "row" },
-                      flexWrap: "wrap",
-                      alignItems: { xs: "flex-start", md: "center" },
-                      justifyContent: { xs: "space-between", md: "flex-end" },
-                      marginTop: { xs: "8px", md: 0 },
-                    }}
-                  >
-                    
-        <div key={article.uniqueId}>
-          <img
-            src={QrCodeIcon}
-            alt="QR code"
-            style={{ width: 36, marginRight: 12, cursor: "pointer" }}
-            onClick={() => {
-              handleGenerateQrCode(article.uniqueId);
-            }}
-          />
-        </div>
-
-      <Dialog open={openQrCode} onClose={handleCloseQrCode}>
-        <DialogContent style={{ textAlign: "center" }}>
-          <QRCode value={currentArticleId} size={256} />
-          <br />
-          <Button onClick={handleCloseQrCode}><CloseOutlined />Chiudi</Button>
-        </DialogContent>
-      </Dialog>
-
-
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => exportToTxt([article])}
-                      startIcon={<ArticleIcon />}
+                    <Box
                       sx={{
-                        marginRight: { xs: "8px", md: "16px" },
-                        marginBottom: { xs: "8px", md: 0 },
+                        display: "flex",
+                        flexDirection: { xs: "column", md: "row" },
+                        flexWrap: "wrap",
+                        alignItems: { xs: "flex-start", md: "center" },
+                        justifyContent: { xs: "space-between", md: "flex-end" },
+                        marginTop: { xs: "8px", md: 0 },
                       }}
                     >
-                      Esporta in TXT
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      onClick={() => exportToCsv([article])}
-                      startIcon={<ArticleIcon />}
-                      sx={{
-                        marginRight: { xs: "8px", md: "16px" },
-                        marginBottom: { xs: "8px", md: 0 },
-                      }}
-                    >
-                      Esporta in CSV
-                    </Button>
-                    <IconButton
-                      edge="end"
-                      aria-label="delete"
-                      onClick={() => removeArticle(article)}
-                      sx={{ display: { xs: "none", sm: "inline-flex" } }}
-                    >
-                      <Delete />
-                    </IconButton>
-                  </Box>
-        </>
-                  
+                      <div key={article.uniqueId}>
+                        <img
+                          src={QrCodeIcon}
+                          alt="QR code"
+                          style={{
+                            width: 36,
+                            marginRight: 12,
+                            cursor: "pointer",
+                          }}
+                          onClick={() => {
+                            handleGenerateQrCode(article.uniqueId);
+                          }}
+                        />
+                      </div>
+
+                      <Dialog open={openQrCode} onClose={handleCloseQrCode}>
+                        <DialogContent style={{ textAlign: "center" }}>
+                          <article ref={componentRef}>
+                            {qrCodeImage ? (
+                              <div className="print-content">
+                                <img
+                                  src={qrCodeImage}
+                                  alt={`Articolo ${article.uniqueId}`}
+                                />
+                                <p>{`Commessa:  ${article.uniqueId}`}</p>
+                              </div>
+                            ) : (
+                              <div
+                                style={{
+                                  display: isPrinting ? "none" : "block",
+                                }}
+                                ref={componentRef}
+                              >
+                                <QRCode value={article.uniqueId} />
+                                <p>{`Commessa:  ${article.uniqueId}`}</p>
+                              </div>
+                            )}
+
+                            {showButtonPrint && (
+                              <Button
+                                variant="outlined"
+                                startIcon={<PrintIcon />}
+                                onClick={handlePrint}
+                              >
+                                Stampa
+                              </Button>
+                            )}
+                            <Button
+                              variant="outlined"
+                              onClick={handleCloseQrCode}
+                              sx={{ marginLeft: 1 }}
+                            >
+                              <CloseOutlined />
+                              Chiudi
+                            </Button>
+                          </article>
+                        </DialogContent>
+                      </Dialog>
+
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => exportToTxt([article])}
+                        startIcon={<ArticleIcon />}
+                        sx={{
+                          marginRight: { xs: "8px", md: "16px" },
+                          marginBottom: { xs: "8px", md: 0 },
+                        }}
+                      >
+                        Esporta in TXT
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => exportToCsv([article])}
+                        startIcon={<ArticleIcon />}
+                        sx={{
+                          marginRight: { xs: "8px", md: "16px" },
+                          marginBottom: { xs: "8px", md: 0 },
+                        }}
+                      >
+                        Esporta in CSV
+                      </Button>
+                      <IconButton
+                        edge="end"
+                        aria-label="delete"
+                        onClick={() => removeArticle(article)}
+                        sx={{ display: { xs: "none", sm: "inline-flex" } }}
+                      >
+                        <Delete />
+                      </IconButton>
+                    </Box>
+                  </>
                 }
               >
                 <Box
@@ -626,55 +687,55 @@ const handleCloseQrCodeHistory = () => {
                 >
                   <img src={CommessaIcon} alt="commessa" width={42} />
                   <ListItemText
-  primary={
-    <>
-      <span className="name">{article.name}</span>
-      <br />
-      <span>{article.date}</span>
-    </>
-  }
-  secondary={article.uniqueId}
-  sx={{
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    minWidth: "200px",
-    "& .uniqueId": {
-      background: "rgb(14, 14, 14);",
-      color: "white",
-      padding: "4px",
-      borderRadius: "6px",
-      fontWeight: 800,
-    },
-    "& .MuiListItemText-secondary": {
-      alignSelf: "flex-start",
-    },
-    "@media (max-width: 600px)": {
-      flexDirection: "column",
-      alignItems: "left",
-      "& .name": {
-        fontSize: "10px",
-        whiteSpace: "nowrap",
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-      },
-    },
-    "@media (min-width: 600px)": {
-      flexDirection: "row",
-      alignItems: "left",
-      "& .MuiListItemText-secondary": {
-        alignSelf: "left",
-        marginLeft: "2px",
-      },
-      "& .name": {
-        whiteSpace: "nowrap",
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-      },
-    },
-  }}
-  classes={{ secondary: "uniqueId" }}
-/>
+                    primary={
+                      <>
+                        <span className="name">{article.name}</span>
+                        <br />
+                        <span>{article.date}</span>
+                      </>
+                    }
+                    secondary={article.uniqueId}
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                      minWidth: "200px",
+                      "& .uniqueId": {
+                        background: "rgb(14, 14, 14);",
+                        color: "white",
+                        padding: "4px",
+                        borderRadius: "6px",
+                        fontWeight: 800,
+                      },
+                      "& .MuiListItemText-secondary": {
+                        alignSelf: "flex-start",
+                      },
+                      "@media (max-width: 600px)": {
+                        flexDirection: "column",
+                        alignItems: "left",
+                        "& .name": {
+                          fontSize: "10px",
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        },
+                      },
+                      "@media (min-width: 600px)": {
+                        flexDirection: "row",
+                        alignItems: "left",
+                        "& .MuiListItemText-secondary": {
+                          alignSelf: "left",
+                          marginLeft: "2px",
+                        },
+                        "& .name": {
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        },
+                      },
+                    }}
+                    classes={{ secondary: "uniqueId" }}
+                  />
                 </Box>
               </ListItem>
             ))}
@@ -691,68 +752,65 @@ const handleCloseQrCodeHistory = () => {
             </Typography>
           </Box>
           <Box sx={{ mt: 2 }}>
-        
-          {idHistory.length > 0 && (
-  <>
-    <Stack
-  direction={{ xs: 'column', sm: 'row' }}
-  alignItems={{ xs: 'center', sm: 'flex-start' }}
-  justifyContent={{ xs: 'center', sm: 'flex-start' }}
-  spacing={2}
-  sx={{ width: '100%' }}
->
-  <Button
-    variant="contained"
-    color="secondary"
-    startIcon={<Delete />}
-    onClick={handleRemoveAll}
-    sx={{ width: '100%', mb: { xs: 0, sm: 0 } }}
-  >
-    Elimina cronologia
-  </Button>
-  <Button
-    variant="contained"
-    color="primary"
-    startIcon={<QrCodeOutlined />}
-    onClick={() => handleGenerateQrCodeHistory(JSON.stringify(idHistory))}
-    sx={{ width: '100%', ml: { xs: 0, sm: 2 } }}
-  >
-    Genera QR Code della cronologia
-  </Button>
-  <Button
-  variant="contained"
-  color="success"
-  startIcon={<ArticleIcon />}
-  onClick={exportAllHistoryToCsv}
-  sx={{ width: '100%', ml: { xs: 0, sm: 2 } }}
->
-  Esporta cronologia completa
-</Button>
+            {idHistory.length > 0 && (
+              <>
+                <Stack
+                  direction={{ xs: "column", sm: "row" }}
+                  alignItems={{ xs: "center", sm: "flex-start" }}
+                  justifyContent={{ xs: "center", sm: "flex-start" }}
+                  spacing={2}
+                  sx={{ width: "100%" }}
+                >
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<Delete />}
+                    onClick={handleRemoveAll}
+                    sx={{ width: "100%", mb: { xs: 0, sm: 0 } }}
+                  >
+                    Elimina cronologia
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<QrCodeOutlined />}
+                    onClick={() =>
+                      handleGenerateQrCodeHistory(JSON.stringify(idHistory))
+                    }
+                    sx={{ width: "100%", ml: { xs: 0, sm: 2 } }}
+                  >
+                    Genera QR Code della cronologia
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    startIcon={<ArticleIcon />}
+                    onClick={exportAllHistoryToCsv}
+                    sx={{ width: "100%", ml: { xs: 0, sm: 2 } }}
+                  >
+                    Esporta cronologia completa
+                  </Button>
+                </Stack>
 
-</Stack>
-
-    <TextField
-      sx={{ my: 2 }}
-      label="Cerca"
-      type="text"
-      value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
-      fullWidth
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <SearchOutlined></SearchOutlined>
-          </InputAdornment>
-        ),
-      }}
-      id="search"
-    />
-  </>
-)}
-
-
-
- </Box>
+                <TextField
+                  sx={{ my: 2 }}
+                  label="Cerca"
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  fullWidth
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchOutlined></SearchOutlined>
+                      </InputAdornment>
+                    ),
+                  }}
+                  id="search"
+                />
+              </>
+            )}
+          </Box>
           <List sx={{ bgcolor: "background.paper" }}>
             {idHistory
               .filter((id) => id.includes(searchTerm))
@@ -761,15 +819,14 @@ const handleCloseQrCodeHistory = () => {
                   key={id}
                   secondaryAction={
                     <>
-                           <IconButton
-                      edge="end"
-                      aria-label="delete"
-                      onClick={() => removeIdFromHistory(id)}
-                    >
-                      <Delete />
-                    </IconButton>
+                      <IconButton
+                        edge="end"
+                        aria-label="delete"
+                        onClick={() => removeIdFromHistory(id)}
+                      >
+                        <Delete />
+                      </IconButton>
                     </>
-             
                   }
                 >
                   <ListItemIcon>
@@ -786,26 +843,29 @@ const handleCloseQrCodeHistory = () => {
             <QRCode value={idHistory.join(",")} />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseQrCodeHistory}><CloseOutlined />Chiudi</Button>
+            <Button onClick={handleCloseQrCodeHistory}>
+              <CloseOutlined />
+              Chiudi
+            </Button>
           </DialogActions>
         </Dialog>
         <Dialog open={open} onClose={handleCancelRemoveAll}>
-            <DialogTitle>
-              Sei sicuro di voler eliminare la cronologia?
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                Questa azione è irreversibile. Sei sicuro di voler eliminare la
-                cronologia?
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleCancelRemoveAll}>Annulla</Button>
-              <Button onClick={handleConfirmRemoveAll} autoFocus>
-                Elimina
-              </Button>
-            </DialogActions>
-          </Dialog>
+          <DialogTitle>
+            Sei sicuro di voler eliminare la cronologia?
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Questa azione è irreversibile. Sei sicuro di voler eliminare la
+              cronologia?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCancelRemoveAll}>Annulla</Button>
+            <Button onClick={handleConfirmRemoveAll} autoFocus>
+              Elimina
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Container>
     </>
   );

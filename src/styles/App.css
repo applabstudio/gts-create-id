@@ -9,11 +9,11 @@ li {
 }
 
 .notched-outline {
-    border-color: #fff !important;
+    border-color: black !important;
   }
   
   .input-label.MuiInputLabel-shrink {
-    color: #fff !important;
+    color: black !important;
   }
 
 .list-item span:nth-last-of-type(1) {
