@@ -130,13 +130,14 @@ const CompanyList = () => {
     );
   };
 
-  const saveDataToLocal = (id: number) => {
-    localStorage.setItem(
-      `cliente-${id}`,
-      JSON.stringify(data.filter((item) => item.id === id)[0].ragioneSociale)
-    );
-  };
+ const saveDataToLocal = (id: number) => {
+  const ragioneSociale = data.filter((item) => item.id === id)[0].ragioneSociale;
+  const ragioneSocialeJSON = JSON.stringify(ragioneSociale);
+  const ragioneSocialeParsed = JSON.parse(ragioneSocialeJSON);
+  localStorage.setItem(`cliente-${id}`, ragioneSocialeParsed);
+};
 
+  
   const handleLoadFromLocal = (id: number) => {
     const ragioneSociale = localStorage.getItem(`cliente-${id}`);
     if (ragioneSociale) {
@@ -203,10 +204,10 @@ const CompanyList = () => {
             flexGrow: 1,
             paddingY: 4,
             display: "flex",
-            alignItems: "center",
+            alignItems: "left",
             justifyContent: "space-between",
             flexDirection: { xs: "column", md: "row" },
-            textAlign: { xs: "center", md: "left" },
+            textAlign: { xs: "left", md: "left" },
           }}
         >
           Lista codici clienti
@@ -218,24 +219,19 @@ const CompanyList = () => {
               mt: { xs: 2, md: 0 },
             }}
           >
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => exportToCSV(data)}
-              startIcon={<ArticleOutlined />}
-              sx={{
-                marginRight: { xs: 1, md: 2 },
-                fontSize: { xs: "0.8rem", md: "inherit" },
-              }}
-            >
-              Esporta tutti in CSV
-            </Button>
+            
             <Button
               variant="contained"
               onClick={() => setOpenModal(true)}
               startIcon={<PersonAdd />}
+    
               sx={{
                 fontSize: { xs: "0.8rem", md: "inherit" },
+                flexGrow: 1,
+                display: "flex",
+                alignItems: "left",
+                flexDirection: { xs: "row", md: "row" },
+                textAlign: { xs: "left", md: "left" },
               }}
             >
               Aggiungi nuovo utente
@@ -272,9 +268,27 @@ const CompanyList = () => {
           }}
           variant="outlined"
         />
+        
       </Stack>
+  <Button
+  variant="contained"
+  color="success"
+  onClick={() => exportToCSV(data)}
+  startIcon={<ArticleOutlined />}
+  sx={{
+    marginRight: { xs: 1, md: 2 },
+    fontSize: { xs: "0.8rem", md: "inherit" },
+    marginTop: { ms: 2, md: 2, xs: 2 },
+    width: { sm: "100%", md: "auto" }, // impostare larghezza a 100% solo per schermi <= sm
+  }}
+  fullWidth
+>
 
+              Esporta tutti in CSV
+            </Button>
+            <p>Esplora i codici clienti</p>
       <Grid container spacing={3} sx={{ marginTop: "16px" }}>
+        
         {filteredData.map((item) => (
           <Grid item xs={12} sm={6} md={4} key={item.id}>
             <Card sx={{ height: "100%" }}>

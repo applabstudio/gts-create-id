@@ -2,7 +2,7 @@ import { BottomNavigation, BottomNavigationAction, Box, useMediaQuery } from "@m
 import { useTheme } from "@mui/material/styles";
 import { Link, useLocation } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
-import HistoryIcon from "@mui/icons-material/History";
+import ArticleIcon from '@mui/icons-material/Article'
 import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
 import AddIcon from "@mui/icons-material/Add";
 
@@ -14,15 +14,20 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
-  { label: "Home", icon: <HomeIcon />, path: "/" , hash: "home" },
+  { label: "Home", icon: <HomeIcon />, path: "/", hash: "home" },
   { label: "Crea", icon: <AddIcon />, path: "/", hash: "start" },
-  { label: "Cronologia", icon: <HistoryIcon />, path: "/history", hash: "history" },
+  {
+    label: "Commesse",
+    icon: <ArticleIcon />,
+    path: "/commesse",
+    hash: "commesse",
+  },
   {
     label: "Clienti",
     icon: <BadgeOutlinedIcon />,
     path: "/code-customer",
     hash: "clienti",
-  }
+  },
 ];
 
 export default function BottomTabBar() {

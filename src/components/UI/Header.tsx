@@ -19,6 +19,7 @@ import { Menu, Home, History, BadgeOutlined , SearchOutlined} from "@mui/icons-m
 import LightLogo from "../../assets/images/light-logo.png";
 import DarkLogo from '../../assets/images/dark-logo.png';
 import { Link } from "react-router-dom";
+import ArticleIcon from '@mui/icons-material/Article'
 
 type HeaderProps = {
   title: string;
@@ -49,7 +50,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
 
   const menuItems = [
     { label: "Home", icon: <Home />, path: "/" },
-    { label: "Cronologia ID Commesse", icon: <History />, path: "/history" },
+    { label: "Commesse", icon: <ArticleIcon />, path: "/commesse" },
     {
       label: "Codici Clienti",
       icon: <BadgeOutlined />,
@@ -64,7 +65,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
 
   return (
     <div>
-      <AppBar position="static" color={darkMode ? "default" : "primary"}>
+      <AppBar position="static" color={darkMode ? "primary" : "default"}>
         <Toolbar
           sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
         >
@@ -80,7 +81,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             <Link to="/" style={{ color: "inherit", textDecoration: "none" }}>
               <img
-                src={darkMode ? DarkLogo : LightLogo}
+                src={darkMode ?  LightLogo : DarkLogo}
                 width={120}
                 alt={"Logo"}
               />{" "}
@@ -98,6 +99,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
                 to={item.path}
                 sx={{ marginLeft: 1 }}
                 startIcon={item.icon}
+                
               >
                 {item.label}
               </Button>

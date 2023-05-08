@@ -35,9 +35,11 @@ import {
   AccessTimeOutlined,
   CloseOutlined,
   QrCodeOutlined,
+  Announcement
 } from "@mui/icons-material";
 import ArticleIcon from "@mui/icons-material/Article";
 import PrintIcon from "@mui/icons-material/Print";
+import TodayIcon from "@mui/icons-material/Today";
 import Papa from "papaparse";
 import CommessaIcon from "../assets/images/commessa.png";
 import { ToastContainer, toast } from "react-toastify";
@@ -250,17 +252,17 @@ function GenerateUniqueId(): JSX.Element {
   const [qrCodeImage, setQrCodeImage] = useState<string | null>(null);
   const [showButtonPrint, setShowButtonPrint] = useState(true);
 
-  useEffect(() => {
-    if (isPrinting) {
-      setShowButtonPrint(false);
-      const node = componentRef.current;
-      if (node) {
-        html2canvas(node).then((canvas) => {
-          setQrCodeImage(canvas.toDataURL());
-        });
-      }
-    }
-  }, [isPrinting]);
+  // useEffect(() => {
+  //   if (isPrinting) {
+  //     setShowButtonPrint(false);
+  //     const node = componentRef.current;
+  //     if (node) {
+  //       html2canvas(node).then((canvas) => {
+  //         setQrCodeImage(canvas.toDataURL());
+  //       });
+  //     }
+  //   }
+  // }, [isPrinting]);
 
   const componentRef = useRef(null);
   const handlePrint = useReactToPrint({
@@ -270,6 +272,14 @@ function GenerateUniqueId(): JSX.Element {
       setShowButtonPrint(true);
     },
   });
+  
+  const [selectedArticleId, setSelectedArticleId] = useState<Article | null>(null);
+
+
+  const handleClickArticle = (article: Article) => {
+
+    setSelectedArticleId(article);
+  };
 
   const handleGenerateQrCodeHistory = (idHistory: string) => {
     setOpenQrCodeHistory(true);
@@ -520,6 +530,7 @@ sx={{ mb: 2, mt:2 }}
             justifyContent: "space-between",
           }}
         >
+          <Box sx={{ mt: { xs: 2, md: 0 } }}>
           <Typography
             variant="h6"
             align="left"
@@ -529,9 +540,26 @@ sx={{ mb: 2, mt:2 }}
               textAlign: { xs: "center", md: "left" },
             }}
           >
-            Commesse generate oggi
+            <TodayIcon />
+             &nbsp; Commesse generate 
           </Typography>
-
+          
+          <Typography
+            variant="h6"
+            align="left"
+            sx={{
+              fontSize: { xs: "0.8rem", md: "0.9rem" },
+              mb: { xs: 2, md: 0 },
+              textAlign: { xs: "center", md: "left" },
+              opacity: '0.75',
+              color: 'orange',
+              fontWeight:'600'
+            }}
+          >
+            <Announcement />
+             &nbsp; Ricordati di salvare il QrCode della commessa
+          </Typography>
+</Box>
           {articles.length > 0 && (
             <>
               <Box>
@@ -590,34 +618,34 @@ sx={{ mb: 2, mt:2 }}
                             cursor: "pointer",
                           }}
                           onClick={() => {
+                            setSelectedArticleId(article);
                             handleGenerateQrCode(article.uniqueId);
                           }}
                         />
                       </div>
 
                       <Dialog open={openQrCode} onClose={handleCloseQrCode}>
-                        <DialogContent style={{ textAlign: "center" }}>
-                          <article ref={componentRef}>
-                            {qrCodeImage ? (
-                              <div className="print-content">
-                                <img
-                                  src={qrCodeImage}
-                                  alt={`Articolo ${article.uniqueId}`}
-                                />
-                                <p>{`Commessa: ${article.uniqueId}`}</p>
-                              </div>
-                            ) : (
-                              <div
-                                style={{
-                                  display: isPrinting ? "none" : "block",
-                                }}
-                                ref={componentRef}
-                              >
-                                <QRCode value={article.uniqueId} />
-                                <p>{`Commessa:  ${article.uniqueId}`}</p>
-                              </div>
-                            )}
-
+  <DialogContent style={{ textAlign: "center" }}>
+    <article ref={componentRef}>
+      {qrCodeImage ? (
+        <div className="print-content">
+          <img
+            src={qrCodeImage}
+            alt={`Articolo ${selectedArticleId?.uniqueId}`}
+          />
+          <p>{`Commessa: ${selectedArticleId?.uniqueId}`}</p>
+        </div>
+      ) : (
+        <div
+          style={{
+            display: isPrinting ? "none" : "block",
+          }}
+          ref={componentRef}
+        >
+          <QRCode value={selectedArticleId?.uniqueId ?? ''} />
+          <p>{`Commessa: ${selectedArticleId?.uniqueId}`}</p>
+        </div>
+      )}
                             {showButtonPrint && (
                               <Button
                                 variant="outlined"
@@ -746,10 +774,19 @@ sx={{ mb: 2, mt:2 }}
         <Divider sx={{ my: 2, borderColor: "primary.main" }} />
 
         <Box>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <AccessTimeOutlined sx={{ mr: 1 }} />
-            <Typography variant="h5" component="h3">
-              Cronologia commesse generate
+          <Box >
+            <Typography
+            variant="h6"
+            align="left"
+            sx={{
+              fontSize: { xs: "1.2rem", md: "2rem" },
+          
+              textAlign: { xs: "center", md: "left" },
+            }}
+          >
+                        <AccessTimeOutlined sx={{ mr: 1 }} />
+
+              Cronologia commesse
             </Typography>
           </Box>
           <Box sx={{ mt: 2 }}>
@@ -764,7 +801,7 @@ sx={{ mb: 2, mt:2 }}
                 >
                   <Button
                     variant="contained"
-                    color="secondary"
+                    color="error"
                     startIcon={<Delete />}
                     onClick={handleRemoveAll}
                     sx={{ width: "100%", mb: { xs: 0, sm: 0 } }}
@@ -862,7 +899,7 @@ sx={{ mb: 2, mt:2 }}
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCancelRemoveAll}>Annulla</Button>
-            <Button onClick={handleConfirmRemoveAll} autoFocus>
+            <Button variant="contained" color="error" onClick={handleConfirmRemoveAll} autoFocus >
               Elimina
             </Button>
           </DialogActions>

@@ -38,7 +38,7 @@ const App: FC = () => {
       <Header title="" />
       <ScrollToTop />
       <Routes>
-        <Route path="/history" element={<HistoryPage />} />
+        <Route path="/commesse" element={<HistoryPage />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/code-customer" element={<CompanyPage />} />
       </Routes>
