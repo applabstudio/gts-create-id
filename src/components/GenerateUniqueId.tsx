@@ -45,11 +45,12 @@ import CommessaIcon from "../assets/images/commessa.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import QrCodeIcon from "../assets/images/qrcode_icon.png";
+import BarCodeIcon from "../assets/images/barcodeicon.png";
 import QRCode from "qrcode.react";
 import TableToggleButton from "./Table/TableToggleButton";
 import { tableData } from "../data";
 import { useReactToPrint } from "react-to-print";
-import html2canvas from "html2canvas";
+import JsBarcode from "jsbarcode";
 
 interface Article {
   name: string;
@@ -274,12 +275,13 @@ function GenerateUniqueId(): JSX.Element {
   });
   
   const [selectedArticleId, setSelectedArticleId] = useState<Article | null>(null);
+  const [selectedArticleId2, setSelectedArticleId2] = useState<string>("");
 
 
-  const handleClickArticle = (article: Article) => {
+  // const handleClickArticle = (article: Article) => {
 
-    setSelectedArticleId(article);
-  };
+  //   setSelectedArticleId(article);
+  // };
 
   const handleGenerateQrCodeHistory = (idHistory: string) => {
     setOpenQrCodeHistory(true);
@@ -320,6 +322,39 @@ function GenerateUniqueId(): JSX.Element {
     setCodeCustomer(Number(event.target.value));
   }
 
+  const handleGenerateBarcode = (uniqueId: string) => {
+    const barcodeCanvas = document.createElement("canvas");
+    JsBarcode(barcodeCanvas, uniqueId, {
+      format: "CODE128",
+      displayValue: true,
+      fontSize: 12,
+      width: 2,
+      height: 50,
+      margin: 10,
+    });
+    const barcodeImageUrl = barcodeCanvas.toDataURL();
+    return barcodeImageUrl;
+  };
+
+  const handleShowBarcode = (uniqueId: string) => {
+    const barcodeImageUrl = handleGenerateBarcode(uniqueId);
+    toast.info(
+      <div>
+        <p>Codice a barre</p>
+        <img src={barcodeImageUrl} alt="Barcode" />
+      </div>
+    );
+  };
+
+  const toastQrCode = (uniqueId: string) => {
+    toast.info(
+      <div>
+        <p>QRCode</p>
+        <p><b>{uniqueId}</b></p>
+       <QRCode value={uniqueId} />
+      </div>
+    );
+  };
   const filteredArticles = articles.filter(
     (article) =>
       article.uniqueId.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -608,7 +643,8 @@ sx={{ mb: 2, mt:2 }}
                         marginTop: { xs: "8px", md: 0 },
                       }}
                     >
-                      <div key={article.uniqueId}>
+                      <div style={{padding: '4px', flexDirection: 'row'}}>
+                      <div key={article.uniqueId} >
                         <img
                           src={QrCodeIcon}
                           alt="QR code"
@@ -620,8 +656,26 @@ sx={{ mb: 2, mt:2 }}
                           onClick={() => {
                             setSelectedArticleId(article);
                             handleGenerateQrCode(article.uniqueId);
+                          
+                            // Verifica se è un dispositivo mobile
+                            const isMobile = window.innerWidth <= 768;
+                          
+                            if (!isMobile) {
+                              toastQrCode(article.uniqueId);
+                            }
                           }}
                         />
+                         <img
+        onClick={() => handleShowBarcode(article.uniqueId)}
+                        src={BarCodeIcon}
+                        alt="Barcode"
+                        style={{
+                          width: 36,
+                          marginRight: 12,
+                          marginBottom: 3,
+                          cursor: "pointer",
+                        }}
+                      />
                       </div>
 
                       <Dialog open={openQrCode} onClose={handleCloseQrCode}>
@@ -666,7 +720,8 @@ sx={{ mb: 2, mt:2 }}
                           </article>
                         </DialogContent>
                       </Dialog>
-
+             
+                      </div>
                       <Button
                         variant="contained"
                         color="primary"
