@@ -208,6 +208,12 @@ function GenerateUniqueId(): JSX.Element {
       // Salva gli ID storici nel localStorage
       localStorage.setItem("idHistory", JSON.stringify(newIdHistory));
       toast.success("Commessa creata con successo!");
+         // Verifica se è un dispositivo mobile
+                            const isMobile = window.innerWidth <= 768;
+                          
+                            if (!isMobile) {
+                              toastQrCode(newArticle.uniqueId);
+                            }
     } else {
       // non tutte le checkbox sono selezionate
       // mostra un messaggio di errore o fai qualcosa per impedire la creazione dell'articoloa
@@ -349,7 +355,7 @@ function GenerateUniqueId(): JSX.Element {
   const toastQrCode = (uniqueId: string) => {
     toast.info(
       <div>
-        <p>QRCode</p>
+        <p>QR Code Commessa</p>
         <p><b>{uniqueId}</b></p>
        <QRCode value={uniqueId} />
       </div>
@@ -647,7 +653,7 @@ sx={{ mb: 2, mt:2 }}
                       <div key={article.uniqueId} >
                         <img
                           src={QrCodeIcon}
-                          alt="QR code"
+                          alt="QR code commessa"
                           style={{
                             width: 36,
                             marginRight: 12,
@@ -656,13 +662,6 @@ sx={{ mb: 2, mt:2 }}
                           onClick={() => {
                             setSelectedArticleId(article);
                             handleGenerateQrCode(article.uniqueId);
-                          
-                            // Verifica se è un dispositivo mobile
-                            const isMobile = window.innerWidth <= 768;
-                          
-                            if (!isMobile) {
-                              toastQrCode(article.uniqueId);
-                            }
                           }}
                         />
                          <img
