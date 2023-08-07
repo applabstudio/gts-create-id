@@ -35,7 +35,7 @@ import {
   AccessTimeOutlined,
   CloseOutlined,
   QrCodeOutlined,
-  Announcement
+  Announcement,
 } from "@mui/icons-material";
 import ArticleIcon from "@mui/icons-material/Article";
 import PrintIcon from "@mui/icons-material/Print";
@@ -205,15 +205,17 @@ function GenerateUniqueId(): JSX.Element {
       setCodeCustomer(codeCustomer + 1);
       const newIdHistory = [...idHistory, newArticle.uniqueId];
       setIdHistory(newIdHistory);
+      console.log("newIdHistory");
       // Salva gli ID storici nel localStorage
       localStorage.setItem("idHistory", JSON.stringify(newIdHistory));
+     
       toast.success("Commessa creata con successo!");
-         // Verifica se è un dispositivo mobile
-                            const isMobile = window.innerWidth <= 768;
-                          
-                            if (!isMobile) {
-                              toastQrCode(newArticle.uniqueId);
-                            }
+      // Verifica se è un dispositivo mobile
+      const isMobile = window.innerWidth <= 768;
+
+      if (!isMobile) {
+        toastQrCode(newArticle.uniqueId);
+      }
     } else {
       // non tutte le checkbox sono selezionate
       // mostra un messaggio di errore o fai qualcosa per impedire la creazione dell'articoloa
@@ -279,10 +281,11 @@ function GenerateUniqueId(): JSX.Element {
       setShowButtonPrint(true);
     },
   });
-  
-  const [selectedArticleId, setSelectedArticleId] = useState<Article | null>(null);
-  const [selectedArticleId2, setSelectedArticleId2] = useState<string>("");
 
+  const [selectedArticleId, setSelectedArticleId] = useState<Article | null>(
+    null
+  );
+  const [selectedArticleId2, setSelectedArticleId2] = useState<string>("");
 
   // const handleClickArticle = (article: Article) => {
 
@@ -356,8 +359,10 @@ function GenerateUniqueId(): JSX.Element {
     toast.info(
       <div>
         <p>QR Code Commessa</p>
-        <p><b>{uniqueId}</b></p>
-       <QRCode value={uniqueId} />
+        <p>
+          <b>{uniqueId}</b>
+        </p>
+        <QRCode value={uniqueId} />
       </div>
     );
   };
@@ -431,31 +436,31 @@ function GenerateUniqueId(): JSX.Element {
               <TableToggleButton data={tableData} />
 
               <div>
-<Typography variant="h5">
-<i>Step 1.</i> Versione del progetto indicato a cliente
-</Typography>
-<FormControlLabel
-control={
-<Checkbox
-checked={options.versionProject}
-onChange={() => handleOptionChange1("versionProject")}
-required
-/>
-}
-label="Inserisci Versione Progetto"
-/>
-<Collapse in={options.versionProject}>
-<TextField
-label="Inizio versione progetto"
-type="number"
-value={versionProject}
-onChange={handleVersionProjectChange}
-fullWidth
-required
-sx={{ mb: 2, mt:2 }}
-/>
-</Collapse>
-</div>
+                <Typography variant="h5">
+                  <i>Step 1.</i> Versione del progetto indicato a cliente
+                </Typography>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={options.versionProject}
+                      onChange={() => handleOptionChange1("versionProject")}
+                      required
+                    />
+                  }
+                  label="Inserisci Versione Progetto"
+                />
+                <Collapse in={options.versionProject}>
+                  <TextField
+                    label="Inizio versione progetto"
+                    type="number"
+                    value={versionProject}
+                    onChange={handleVersionProjectChange}
+                    fullWidth
+                    required
+                    sx={{ mb: 2, mt: 2 }}
+                  />
+                </Collapse>
+              </div>
               <div>
                 <h3>
                   <i>Step 2.</i>Codice Cliente
@@ -471,17 +476,17 @@ sx={{ mb: 2, mt:2 }}
                   label="Inserisci Codice Cliente"
                 />
                 <Collapse in={options.codeCustomer}>
-                {options.codeCustomer && (
-                  <TextField
-                    label="Inizio codice cliente"
-                    type="number"
-                    value={codeCustomer}
-                    onChange={handleCodeCustomerChange}
-                    fullWidth
-                    required
-                    sx={{ mb: 2, mt:2 }}
-                  />
-                )}
+                  {options.codeCustomer && (
+                    <TextField
+                      label="Inizio codice cliente"
+                      type="number"
+                      value={codeCustomer}
+                      onChange={handleCodeCustomerChange}
+                      fullWidth
+                      required
+                      sx={{ mb: 2, mt: 2 }}
+                    />
+                  )}
                 </Collapse>
               </div>
               <div>
@@ -572,35 +577,35 @@ sx={{ mb: 2, mt:2 }}
           }}
         >
           <Box sx={{ mt: { xs: 2, md: 0 } }}>
-          <Typography
-            variant="h6"
-            align="left"
-            sx={{
-              fontSize: { xs: "1.2rem", md: "2rem" },
-              mb: { xs: 2, md: 0 },
-              textAlign: { xs: "center", md: "left" },
-            }}
-          >
-            <TodayIcon />
-             &nbsp; Commesse generate 
-          </Typography>
-          
-          <Typography
-            variant="h6"
-            align="left"
-            sx={{
-              fontSize: { xs: "0.8rem", md: "0.9rem" },
-              mb: { xs: 2, md: 0 },
-              textAlign: { xs: "center", md: "left" },
-              opacity: '0.75',
-              color: 'orange',
-              fontWeight:'600'
-            }}
-          >
-            <Announcement />
-             &nbsp; Ricordati di salvare il QrCode della commessa
-          </Typography>
-</Box>
+            <Typography
+              variant="h6"
+              align="left"
+              sx={{
+                fontSize: { xs: "1.2rem", md: "2rem" },
+                mb: { xs: 2, md: 0 },
+                textAlign: { xs: "center", md: "left" },
+              }}
+            >
+              <TodayIcon />
+              &nbsp; Commesse generate
+            </Typography>
+
+            <Typography
+              variant="h6"
+              align="left"
+              sx={{
+                fontSize: { xs: "0.8rem", md: "0.9rem" },
+                mb: { xs: 2, md: 0 },
+                textAlign: { xs: "center", md: "left" },
+                opacity: "0.75",
+                color: "orange",
+                fontWeight: "600",
+              }}
+            >
+              <Announcement />
+              &nbsp; Ricordati di salvare il QrCode della commessa
+            </Typography>
+          </Box>
           {articles.length > 0 && (
             <>
               <Box>
@@ -649,77 +654,78 @@ sx={{ mb: 2, mt:2 }}
                         marginTop: { xs: "8px", md: 0 },
                       }}
                     >
-                      <div style={{padding: '4px', flexDirection: 'row'}}>
-                      <div key={article.uniqueId} >
-                        <img
-                          src={QrCodeIcon}
-                          alt="QR code commessa"
-                          style={{
-                            width: 36,
-                            marginRight: 12,
-                            cursor: "pointer",
-                          }}
-                          onClick={() => {
-                            setSelectedArticleId(article);
-                            handleGenerateQrCode(article.uniqueId);
-                          }}
-                        />
-                         <img
-        onClick={() => handleShowBarcode(article.uniqueId)}
-                        src={BarCodeIcon}
-                        alt="Barcode"
-                        style={{
-                          width: 36,
-                          marginRight: 12,
-                          marginBottom: 3,
-                          cursor: "pointer",
-                        }}
-                      />
-                      </div>
+                      <div style={{ padding: "4px", flexDirection: "row" }}>
+                        <div key={article.uniqueId}>
+                          <img
+                            src={QrCodeIcon}
+                            alt="QR code commessa"
+                            style={{
+                              width: 36,
+                              marginRight: 12,
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                              setSelectedArticleId(article);
+                              handleGenerateQrCode(article.uniqueId);
+                            }}
+                          />
+                          <img
+                            onClick={() => handleShowBarcode(article.uniqueId)}
+                            src={BarCodeIcon}
+                            alt="Barcode"
+                            style={{
+                              width: 36,
+                              marginRight: 12,
+                              marginBottom: 3,
+                              cursor: "pointer",
+                            }}
+                          />
+                        </div>
 
-                      <Dialog open={openQrCode} onClose={handleCloseQrCode}>
-  <DialogContent style={{ textAlign: "center" }}>
-    <article ref={componentRef}>
-      {qrCodeImage ? (
-        <div className="print-content">
-          <img
-            src={qrCodeImage}
-            alt={`Articolo ${selectedArticleId?.uniqueId}`}
-          />
-          <p>{`Commessa: ${selectedArticleId?.uniqueId}`}</p>
-        </div>
-      ) : (
-        <div
-          style={{
-            display: isPrinting ? "none" : "block",
-          }}
-          ref={componentRef}
-        >
-          <QRCode value={selectedArticleId?.uniqueId ?? ''} />
-          <p>{`Commessa: ${selectedArticleId?.uniqueId}`}</p>
-        </div>
-      )}
-                            {showButtonPrint && (
+                        <Dialog open={openQrCode} onClose={handleCloseQrCode}>
+                          <DialogContent style={{ textAlign: "center" }}>
+                            <article ref={componentRef}>
+                              {qrCodeImage ? (
+                                <div className="print-content">
+                                  <img
+                                    src={qrCodeImage}
+                                    alt={`Articolo ${selectedArticleId?.uniqueId}`}
+                                  />
+                                  <p>{`Commessa: ${selectedArticleId?.uniqueId}`}</p>
+                                </div>
+                              ) : (
+                                <div
+                                  style={{
+                                    display: isPrinting ? "none" : "block",
+                                  }}
+                                  ref={componentRef}
+                                >
+                                  <QRCode
+                                    value={selectedArticleId?.uniqueId ?? ""}
+                                  />
+                                  <p>{`Commessa: ${selectedArticleId?.uniqueId}`}</p>
+                                </div>
+                              )}
+                              {showButtonPrint && (
+                                <Button
+                                  variant="outlined"
+                                  startIcon={<PrintIcon />}
+                                  onClick={handlePrint}
+                                >
+                                  Stampa
+                                </Button>
+                              )}
                               <Button
                                 variant="outlined"
-                                startIcon={<PrintIcon />}
-                                onClick={handlePrint}
+                                onClick={handleCloseQrCode}
+                                sx={{ marginLeft: 1 }}
                               >
-                                Stampa
+                                <CloseOutlined />
+                                Chiudi
                               </Button>
-                            )}
-                            <Button
-                              variant="outlined"
-                              onClick={handleCloseQrCode}
-                              sx={{ marginLeft: 1 }}
-                            >
-                              <CloseOutlined />
-                              Chiudi
-                            </Button>
-                          </article>
-                        </DialogContent>
-                      </Dialog>
-             
+                            </article>
+                          </DialogContent>
+                        </Dialog>
                       </div>
                       <Button
                         variant="contained"
@@ -828,18 +834,17 @@ sx={{ mb: 2, mt:2 }}
         <Divider sx={{ my: 2, borderColor: "primary.main" }} />
 
         <Box>
-          <Box >
+          <Box>
             <Typography
-            variant="h6"
-            align="left"
-            sx={{
-              fontSize: { xs: "1.2rem", md: "2rem" },
-          
-              textAlign: { xs: "center", md: "left" },
-            }}
-          >
-                        <AccessTimeOutlined sx={{ mr: 1 }} />
+              variant="h6"
+              align="left"
+              sx={{
+                fontSize: { xs: "1.2rem", md: "2rem" },
 
+                textAlign: { xs: "center", md: "left" },
+              }}
+            >
+              <AccessTimeOutlined sx={{ mr: 1 }} />
               Cronologia commesse
             </Typography>
           </Box>
@@ -953,7 +958,12 @@ sx={{ mb: 2, mt:2 }}
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCancelRemoveAll}>Annulla</Button>
-            <Button variant="contained" color="error" onClick={handleConfirmRemoveAll} autoFocus >
+            <Button
+              variant="contained"
+              color="error"
+              onClick={handleConfirmRemoveAll}
+              autoFocus
+            >
               Elimina
             </Button>
           </DialogActions>
